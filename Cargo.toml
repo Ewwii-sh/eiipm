@@ -1,0 +1,17 @@
+[package]
+name = "eiipm"
+version = "0.1.0"
+description = "Eiipm - A simple package manager for ewwii"
+authors = ["Byson94 <byson94wastaken@gmail.com>"]
+license = "MIT"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.98"
+clap = { version = "4.5.43", features = ["derive"] }
+colored = "3.0.0"
+env_logger = "0.11.8"
+log = "0.4.27"
+reqwest = { version = "0.12.22", features = ["blocking", "json"] }
+serde = { version = "1.0.219", features = ["derive"] }
+toml = "0.9.5"
