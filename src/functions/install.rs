@@ -1,12 +1,27 @@
+use colored::{Colorize};
+use dirs;
+use log::{debug, info, trace};
 use reqwest::blocking::get;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::env;
 use std::error::Error;
-use std::fs::File;
-use std::io::Write;
+use std::fs;
 use std::process::Command;
-use log::{debug, info, error, trace};
-use std::path::PathBuf;
-use colored::{Colorize, ColoredString};
+
+const DB_FILE: &str = "./eiipm/installed.toml";
+
+#[derive(Deserialize, Serialize, Debug)]
+struct PackageDB {
+    packages: HashMap<String, InstalledPackage>,
+}
+
+#[derive(Deserialize, Serialize, Debug)]
+struct InstalledPackage {
+    repo_path: String,
+    files: Vec<String>,
+    pkg_type: String,
+}
 
 #[derive(Deserialize, Debug)]
 struct PackageRootMeta {
@@ -16,8 +31,11 @@ struct PackageRootMeta {
 #[derive(Deserialize, Debug)]
 struct PackageMeta {
     name: String,
-    version: f32,
-    install_url: String,
+    #[serde(rename = "type")]
+    pkg_type: String,
+    src: String,
+    files: Vec<String>,
+    build: Option<String>, // Optional build command
 }
 
 pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
@@ -27,98 +45,130 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
         "https://raw.githubusercontent.com/Ewwii-sh/eii-manifests/main/manifests/{}.toml",
         package_name
     );
-    trace!("  Constructed manifest URL:\n    {}", raw_manifest_url.underline());
+    trace!("Fetching manifest from {}", raw_manifest_url.underline());
+    let toml_content = http_get_string(&raw_manifest_url)?;
+    let root_meta: PackageRootMeta = toml::from_str(&toml_content)?;
+    let meta = &root_meta.metadata;
 
-    let toml_content = http_get_string(&raw_manifest_url).map_err(|e| {
-        error!("  [ERROR] Error fetching manifest for package '{}': {}", package_name.yellow(), e.to_string().red());
-        e
-    })?;
-    debug!("  Fetched manifest content:\n{}", toml_content.dimmed());
+    let home_dir = dirs::home_dir().ok_or("Failed to get home directory")?;
+    let eiipm_dir = home_dir.join("./.eiipm");
+    fs::create_dir_all(&eiipm_dir)?;
 
-    let root_meta: PackageRootMeta = toml::from_str(&toml_content).map_err(|e| {
-        error!("  [ERROR] Failed to parse manifest TOML for package '{}': {}", package_name.yellow(), e.to_string().red());
-        e
-    })?;
-    trace!("  Parsed manifest metadata:\n    {:?}", root_meta.metadata);
+    let repo_name = meta
+        .src
+        .split('/')
+        .last()
+        .ok_or("Invalid src URL")?
+        .strip_suffix(".git")
+        .unwrap_or_else(|| meta.src.split('/').last().unwrap());
 
-    let mut install_script_path = std::env::temp_dir();
-    install_script_path.push(format!("{}.sh", package_name));
+    let repo_path = eiipm_dir.join(format!("cache/{}", repo_name));
 
-    info!("  Downloading install script:");
-    info!("    From: {}", root_meta.metadata.install_url.underline());
-    info!("    To:   {}", install_script_path.display().to_string().bright_yellow());
+    // Clone or pull repo
+    if !repo_path.exists() {
+        info!("Cloning repository {} to {}", meta.src.underline(), repo_path.display());
+        let output = Command::new("git")
+            .args(&["clone", &meta.src, repo_path.to_str().unwrap()])
+            .output()?;
+        if !output.status.success() {
+            return Err(format!("Git clone failed: {}", String::from_utf8_lossy(&output.stderr)).into());
+        }
+    } else {
+        info!("Repository exists, pulling latest changes");
+        let output = Command::new("git")
+            .args(&["-C", repo_path.to_str().unwrap(), "pull"])
+            .output()?;
+        if !output.status.success() {
+            return Err(format!("Git pull failed: {}", String::from_utf8_lossy(&output.stderr)).into());
+        }
+    }
 
-    download_file(&root_meta.metadata.install_url, install_script_path.to_str().unwrap()).map_err(|e| {
-        error!("  [ERROR] Failed to download install script for package '{}': {}", package_name.yellow(), e.to_string().red());
-        e
-    })?;
+    // Optional build step
+    if let Some(build_cmd) = &meta.build {
+        info!("Running build command: {}", build_cmd);
+        let status = Command::new("sh")
+            .arg("-c")
+            .arg(build_cmd)
+            .current_dir(&repo_path)
+            .status()?;
+        if !status.success() {
+            return Err(format!("Build failed for package '{}'", package_name).into());
+        }
+    }
 
-    info!("  Running install script: {}", install_script_path.display().to_string().yellow());
+    // Determine target directory
+    let target_base_dir = match meta.pkg_type.as_str() {
+        "binary" => home_dir.join(".eiipm/bin"),
+        "theme" => env::current_dir()?,
+        "library" => home_dir.join(format!(".eiipm/lib/{}", package_name)),
+        other => return Err(format!("Unknown package type '{}'", other).into()),
+    };
+    fs::create_dir_all(&target_base_dir)?;
 
-    run_script(install_script_path.to_str().unwrap(), package_name)?;
+    // Copy files and track them
+    let mut installed_files = Vec::new();
+    for file in &meta.files {
+        let source = repo_path.join(file);
+        if !source.exists() {
+            return Err(format!("File '{}' not found in repo", source.display()).into());
+        }
 
-    info!("  Installation completed successfully for package '{}'", package_name.yellow().bold());
+        // Use just the filename for the target
+        let target = target_base_dir.join(
+            source
+                .file_name()
+                .ok_or_else(|| format!("Invalid file name for '{}'", file))?
+        );
 
-    std::fs::remove_file(install_script_path)?;
+        fs::create_dir_all(target_base_dir.clone())?;
+        fs::copy(&source, &target)?;
+        installed_files.push(target.to_string_lossy().to_string());
+    }
 
+    // Update DB
+    let mut db = load_db()?;
+    db.packages.insert(
+        meta.name.clone(),
+        InstalledPackage {
+            repo_path: repo_path.to_string_lossy().to_string(),
+            files: installed_files,
+            pkg_type: meta.pkg_type.clone(),
+        },
+    );
+    save_db(&db)?;
+
+    info!("Installation complete for '{}'", package_name.yellow().bold());
+    Ok(())
+}
+
+fn load_db() -> Result<PackageDB, Box<dyn Error>> {
+    let home_dir = dirs::home_dir().ok_or("Failed to get home directory")?;
+    let db_path = home_dir.join(DB_FILE);
+    if db_path.exists() {
+        let content = fs::read_to_string(&db_path)?;
+        let db: PackageDB = toml::from_str(&content)?;
+        Ok(db)
+    } else {
+        Ok(PackageDB { packages: HashMap::new() })
+    }
+}
+
+fn save_db(db: &PackageDB) -> Result<(), Box<dyn Error>> {
+    let home_dir = dirs::home_dir().ok_or("Failed to get home directory")?;
+    let db_path = home_dir.join(DB_FILE);
+    if let Some(parent) = db_path.parent() {
+        fs::create_dir_all(parent)?;
+    }
+    let content = toml::to_string_pretty(db)?;
+    fs::write(db_path, content)?;
     Ok(())
 }
 
 fn http_get_string(url: &str) -> Result<String, Box<dyn Error>> {
-    debug!("  Sending GET request to {}", url.dimmed());
-
+    debug!("Sending GET request to {}", url);
     let response = get(url)?;
-
     if !response.status().is_success() {
-        error!("  [ERROR] Failed to fetch URL {}: HTTP {}", url.yellow(), response.status());
         return Err(format!("Failed to fetch URL {}: HTTP {}", url, response.status()).into());
     }
-
-    let body = response.text()?;
-    debug!("  Received response body ({} bytes)", body.len());
-    Ok(body)
-}
-
-fn download_file(url: &str, output_path: &str) -> Result<(), Box<dyn Error>> {
-    debug!("  Sending GET request to download file from {}", url.dimmed());
-
-    let response = get(url)?;
-
-    if !response.status().is_success() {
-        error!("  [ERROR] Failed to download file from {}: HTTP {}", url.yellow(), response.status());
-        return Err(format!("Failed to download file from {}: HTTP {}", url, response.status()).into());
-    }
-
-    let content = response.text()?;
-    debug!("  Downloaded file content length: {} bytes", content.len());
-    debug!("  Creating file at '{}'", output_path.dimmed());
-
-    let mut file = File::create(output_path)?;
-    file.write_all(content.as_bytes())?;
-
-    trace!("  Successfully wrote to '{}'", output_path.bright_green());
-
-    Ok(())
-}
-
-fn run_script(script_path: &str, package_name: &str) -> Result<(), Box<dyn Error>> {
-    info!("  Executing script: {}", script_path.yellow());
-
-    let output = Command::new("sh")
-        .arg(script_path)
-        .output()?; // capture output
-
-    if !output.status.success() {
-        error!("  [ERROR] Script failed with status: {}", format!("{:?}", output.status).red());
-        error!("  [ERROR] stderr:");
-        for line in String::from_utf8_lossy(&output.stderr).lines() {
-            error!("    {}", line.red());
-        }
-        return Err(format!("Script execution failed with status: {:?}", output.status).into());
-    } else {
-        info!("{}", "  Script executed successfully.".bright_green());
-        debug!("  Script stdout:\n{}", String::from_utf8_lossy(&output.stdout).dimmed());
-    }
-
-    Ok(())
+    Ok(response.text()?)
 }

@@ -1,19 +1,27 @@
-use clap::Parser;
+use clap::{Parser, Subcommand};
 
 /// Eiipm package manager for ewwii.
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(version, about)]
 pub struct Args {
-    /// Name of the package to install
-    #[arg(short, long)]
-    pub install: Option<String>,
-
-    /// Name of the package to uninstall
-    #[arg(short, long)]
-    pub uninstall: Option<String>,
-
     /// Show debug logs
     #[arg(long)]
     pub debug: bool,
+    
+    #[command(subcommand)]
+    pub command: Commands,
+}
 
+#[derive(Subcommand, Debug)]
+pub enum Commands {
+    /// Install a package
+    Install {
+        /// Name of the package to install
+        package: String,
+    },
+    /// Uninstall a package
+    Uninstall {
+        /// Name of the package to uninstall
+        package: String,
+    },
 }

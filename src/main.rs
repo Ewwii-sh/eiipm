@@ -1,24 +1,32 @@
-use clap::Parser;
-use std::env;
-use std::io::Write;
-use log::Level;
-
 mod opts;
 mod functions;
-use opts::Args;
-use crate::functions::install::install_package;
+
+use opts::{Args, Commands};
+use functions::install::install_package;
+use functions::uninstall::uninstall_package;
+
+use clap::Parser;
+use log::Level;
 
 fn main() {
     let args = Args::parse();
 
-    set_debug_levels(args.debug);
-
-    if let Some(install_pkg_name) = args.install.as_deref() {
-        install_package(install_pkg_name);
+    if args.debug {
+        log::info!("Debug logging enabled");
+        set_debug_levels(true);
     }
 
-    if let Some(uninstall_pkg_name) = args.uninstall.as_deref() {
-        log::debug!("Uninstalling package: {}", uninstall_pkg_name);
+    match args.command {
+        Commands::Install { package } => {
+            if let Err(e) = install_package(&package) {
+                log::error!("Error installing '{}': {}", package, e);
+            }
+        }
+        Commands::Uninstall { package } => {
+            if let Err(e) = uninstall_package(&package) {
+                log::error!("Error uninstalling '{}': {}", package, e);
+            }
+        }
     }
 }
 
