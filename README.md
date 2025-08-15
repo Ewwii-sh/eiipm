@@ -33,6 +33,8 @@ To add eiipm to your path, add `export PATH="$HOME/.eiipm/bin:$PATH"` to your sh
 echo 'export PATH="$HOME/.eiipm/bin:$PATH"' >> ~/.zshrc
 ```
 
+If you dont want to use echo to add it, then you can manually edit your configuration file and adding the line `export PATH="$HOME/.eiipm/bin:$PATH"` in there.
+
 ## Uploading a custom plugin
 
 If you made a custom plugin and want to register it to ewwii's package manifest, then you should checkout the [Ewwii-sh/eii-manifests](https://github.com/Ewwii-sh/eii-manifests) repository for more info.
