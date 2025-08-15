@@ -19,6 +19,8 @@ eiipm uninstall statictranspl
 eiipm update statictranspl
 ```
 
+For a full list of commands and their uses, checkout [eiipm documentation](https://ewwii-sh.github.io/eiipm/).
+
 ## Adding to path
 
 If you install a binary from **eiipm**, it may not work if you type the name of the binary in the terminal directly. You would need to add eiipm to your path.
