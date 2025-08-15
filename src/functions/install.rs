@@ -2,26 +2,12 @@ use colored::{Colorize};
 use dirs;
 use log::{debug, info, trace};
 use reqwest::blocking::get;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use serde::{Deserialize};
 use std::env;
 use std::error::Error;
 use std::fs;
 use std::process::Command;
-
-const DB_FILE: &str = "./eiipm/installed.toml";
-
-#[derive(Deserialize, Serialize, Debug)]
-struct PackageDB {
-    packages: HashMap<String, InstalledPackage>,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
-struct InstalledPackage {
-    repo_path: String,
-    files: Vec<String>,
-    pkg_type: String,
-}
+use super::{InstalledPackage, save_db, load_db}; 
 
 #[derive(Deserialize, Debug)]
 struct PackageRootMeta {
@@ -51,16 +37,16 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
     let meta = &root_meta.metadata;
 
     let home_dir = dirs::home_dir().ok_or("Failed to get home directory")?;
-    let eiipm_dir = home_dir.join("./.eiipm");
+    let eiipm_dir = home_dir.join(".eiipm");
     fs::create_dir_all(&eiipm_dir)?;
 
     let repo_name = meta
         .src
-        .split('/')
-        .last()
+        .rsplit('/')
+        .next()
         .ok_or("Invalid src URL")?
         .strip_suffix(".git")
-        .unwrap_or_else(|| meta.src.split('/').last().unwrap());
+        .unwrap_or_else(|| meta.src.rsplit('/').next().unwrap());
 
     let repo_path = eiipm_dir.join(format!("cache/{}", repo_name));
 
@@ -133,34 +119,12 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
             repo_path: repo_path.to_string_lossy().to_string(),
             files: installed_files,
             pkg_type: meta.pkg_type.clone(),
+            build_command: meta.build.clone(),
         },
     );
     save_db(&db)?;
 
     info!("Installation complete for '{}'", package_name.yellow().bold());
-    Ok(())
-}
-
-fn load_db() -> Result<PackageDB, Box<dyn Error>> {
-    let home_dir = dirs::home_dir().ok_or("Failed to get home directory")?;
-    let db_path = home_dir.join(DB_FILE);
-    if db_path.exists() {
-        let content = fs::read_to_string(&db_path)?;
-        let db: PackageDB = toml::from_str(&content)?;
-        Ok(db)
-    } else {
-        Ok(PackageDB { packages: HashMap::new() })
-    }
-}
-
-fn save_db(db: &PackageDB) -> Result<(), Box<dyn Error>> {
-    let home_dir = dirs::home_dir().ok_or("Failed to get home directory")?;
-    let db_path = home_dir.join(DB_FILE);
-    if let Some(parent) = db_path.parent() {
-        fs::create_dir_all(parent)?;
-    }
-    let content = toml::to_string_pretty(db)?;
-    fs::write(db_path, content)?;
     Ok(())
 }
 

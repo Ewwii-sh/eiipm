@@ -1,30 +1,47 @@
 mod opts;
 mod functions;
 
-use opts::{Args, Commands};
-use functions::install::install_package;
-use functions::uninstall::uninstall_package;
+use opts::{PMArgs, Commands};
+use functions::{
+    install::install_package,
+    uninstall::uninstall_package,
+    update::update_package,
+    list::list_packages
+};
 
 use clap::Parser;
-use log::Level;
+use log::{info, error, Level};
 
 fn main() {
-    let args = Args::parse();
+    let args = PMArgs::parse();
+
+    set_debug_levels(args.debug);
 
     if args.debug {
-        log::info!("Debug logging enabled");
-        set_debug_levels(true);
+        info!("Debug logging enabled");
     }
 
     match args.command {
         Commands::Install { package } => {
             if let Err(e) = install_package(&package) {
-                log::error!("Error installing '{}': {}", package, e);
+                error!("Error installing '{}': {}", package, e);
             }
         }
         Commands::Uninstall { package } => {
             if let Err(e) = uninstall_package(&package) {
-                log::error!("Error uninstalling '{}': {}", package, e);
+                error!("Error uninstalling '{}': {}", package, e);
+            }
+        }
+        Commands::Update { package } => {
+            if Some(&package).is_some() {
+                let _ = update_package(package);
+            } else {
+                let _ = update_package(None);
+            }
+        }
+        Commands::List(list_args) => {
+            if let Err(e) = list_packages(list_args) {
+                error!("Error listing packages: {}", e);
             }
         }
     }
