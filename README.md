@@ -19,6 +19,20 @@ eiipm uninstall statictranspl
 eiipm update statictranspl
 ```
 
+## Adding to path
+
+If you install a binary from **eiipm**, it may not work if you type the name of the binary in the terminal directly. You would need to add eiipm to your path.
+
+To add eiipm to your path, add `export PATH="$HOME/.eiipm/bin:$PATH"` to your shell's configuration file.
+
+**Example:**
+
+```bash
+# Replace ~/.zshrc with your shell's configuration file.
+# For example, if you use bash, then it would be ~/.bashrc
+echo 'export PATH="$HOME/.eiipm/bin:$PATH"' >> ~/.zshrc
+```
+
 ## Uploading a custom plugin
 
 If you made a custom plugin and want to register it to ewwii's package manifest, then you should checkout the [Ewwii-sh/eii-manifests](https://github.com/Ewwii-sh/eii-manifests) repository for more info.
