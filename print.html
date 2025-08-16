@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="commands.html"><strong aria-hidden="true">2.</strong> Commands</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="install_command.html"><strong aria-hidden="true">2.1.</strong> Install</a></li><li class="chapter-item expanded "><a href="uninstall_command.html"><strong aria-hidden="true">2.2.</strong> Uninstall</a></li><li class="chapter-item expanded "><a href="update_command.html"><strong aria-hidden="true">2.3.</strong> Update</a></li><li class="chapter-item expanded "><a href="list_command.html"><strong aria-hidden="true">2.4.</strong> List</a></li><li class="chapter-item expanded "><a href="clear_cache.html"><strong aria-hidden="true">2.5.</strong> Clear Cache</a></li></ol></li><li class="chapter-item expanded "><a href="tips_n_tricks.html"><strong aria-hidden="true">3.</strong> Tips &amp; Tricks</a></li><li class="chapter-item expanded "><a href="examples.html"><strong aria-hidden="true">4.</strong> Examples</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="commands.html"><strong aria-hidden="true">2.</strong> Commands</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="install_command.html"><strong aria-hidden="true">2.1.</strong> Install</a></li><li class="chapter-item expanded "><a href="uninstall_command.html"><strong aria-hidden="true">2.2.</strong> Uninstall</a></li><li class="chapter-item expanded "><a href="update_command.html"><strong aria-hidden="true">2.3.</strong> Update</a></li><li class="chapter-item expanded "><a href="check_updates.html"><strong aria-hidden="true">2.4.</strong> Check Updates</a></li><li class="chapter-item expanded "><a href="list_command.html"><strong aria-hidden="true">2.5.</strong> List</a></li><li class="chapter-item expanded "><a href="clear_cache.html"><strong aria-hidden="true">2.6.</strong> Clear Cache</a></li></ol></li><li class="chapter-item expanded "><a href="tips_n_tricks.html"><strong aria-hidden="true">3.</strong> Tips &amp; Tricks</a></li><li class="chapter-item expanded "><a href="examples.html"><strong aria-hidden="true">4.</strong> Examples</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -239,23 +239,41 @@ eiipm up [PACKAGE]
 <pre><code class="language-bash">eiipm up # update all
 eiipm up statictranspl  # update just one package
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="list"><a class="header" href="#list">List</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="check-updates"><a class="header" href="#check-updates">Check Updates</a></h1>
 <h3 id="command-3"><a class="header" href="#command-3">Command</a></h3>
+<p>Check for updates in a package or all packages</p>
+<pre><code class="language-bash">eiipm check-update [PACKAGE]
+# or shorter:
+eiipm cu [PACKAGE]
+</code></pre>
+<h3 id="description-3"><a class="header" href="#description-3">Description</a></h3>
+<ul>
+<li>If PACKAGE is given, then it checks for updates in that package.</li>
+<li>If no package is given, then it checks for updates in all installed packages.</li>
+</ul>
+<h3 id="options-3"><a class="header" href="#options-3">Options</a></h3>
+<p><strong>--debug</strong>: Show debug logs.</p>
+<h3 id="examples-3"><a class="header" href="#examples-3">Examples</a></h3>
+<pre><code class="language-bash">eiipm cu # check all
+eiipm check-updates statictranspl  # check just one package
+</code></pre>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="list"><a class="header" href="#list">List</a></h1>
+<h3 id="command-4"><a class="header" href="#command-4">Command</a></h3>
 <p>List installed packages</p>
 <pre><code class="language-bash">eiipm list [OPTIONS]
 # or shorter:
 eiipm l [OPTIONS]
 </code></pre>
-<h3 id="description-3"><a class="header" href="#description-3">Description</a></h3>
+<h3 id="description-4"><a class="header" href="#description-4">Description</a></h3>
 <p>Shows installed packages. Can display just names, detailed info, total count, or a specific package.</p>
-<h3 id="options-3"><a class="header" href="#options-3">Options</a></h3>
+<h3 id="options-4"><a class="header" href="#options-4">Options</a></h3>
 <ul>
 <li><strong>-v</strong>, <strong>--verbose</strong>: Show detailed info for each package.</li>
 <li><strong>-t</strong>, <strong>--total-count</strong>: Show only the total number of installed packages.</li>
 <li><strong>-q</strong>, <strong>--query</strong> &lt;NAME&gt;: Show info for a single package (works with --verbose as well).</li>
 <li><strong>--debug</strong>: Show debug logs.</li>
 </ul>
-<h3 id="examples-3"><a class="header" href="#examples-3">Examples</a></h3>
+<h3 id="examples-4"><a class="header" href="#examples-4">Examples</a></h3>
 <pre><code class="language-bash">eiipm l
 eiipm l --verbose
 eiipm l --total-count
@@ -263,21 +281,21 @@ eiipm l --query statictranspl
 eiipm l -q statictranspl -v
 </code></pre>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="clear-cache"><a class="header" href="#clear-cache">Clear Cache</a></h1>
-<h3 id="command-4"><a class="header" href="#command-4">Command</a></h3>
+<h3 id="command-5"><a class="header" href="#command-5">Command</a></h3>
 <p>Clear package cache with confirmation.</p>
 <pre><code class="language-bash">eiipm clear-cache [PACKAGE]
 # or shorter:
 eiipm cc [PACKAGE]
 </code></pre>
-<h3 id="description-4"><a class="header" href="#description-4">Description</a></h3>
+<h3 id="description-5"><a class="header" href="#description-5">Description</a></h3>
 <ul>
 <li>If PACKAGE is given, then it clears the cache of that package with confirmation.</li>
 <li>If no package is given, then it clears cache of all installed packages with confirmation.</li>
 </ul>
-<h3 id="options-4"><a class="header" href="#options-4">Options</a></h3>
+<h3 id="options-5"><a class="header" href="#options-5">Options</a></h3>
 <p><strong>--force</strong>: Bypass confirmation.
 <strong>--debug</strong>: Show debug logs.</p>
-<h3 id="examples-4"><a class="header" href="#examples-4">Examples</a></h3>
+<h3 id="examples-5"><a class="header" href="#examples-5">Examples</a></h3>
 <pre><code class="language-bash">eiipm cc # clear all
 eiipm clear-cache statictranspl  # clear just one package cache
 
@@ -291,7 +309,7 @@ eiipm cc --force # bypasses confirmation
 <p><strong>Example:</strong></p>
 <pre><code class="language-bash">yes | eiipm update
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="examples-5"><a class="header" href="#examples-5">Examples</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="examples-6"><a class="header" href="#examples-6">Examples</a></h1>
 <p>Installing <a href="https://ewwii-sh.github.io/">ewwii</a> binary directly:</p>
 <pre><code class="language-bash"># installing
 eiipm install ewwii
