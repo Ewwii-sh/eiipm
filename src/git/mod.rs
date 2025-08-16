@@ -1,4 +1,4 @@
-/// Uses with git2
+//! Working with git2 API's
 
 use git2::{
     Repository, Cred, RemoteCallbacks, 

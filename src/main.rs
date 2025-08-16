@@ -14,6 +14,7 @@ use functions::{
 };
 use other::{
     confirm_action::confirm,
+    run_checks::check_eiipm_in_path,
 };
 
 use clap::Parser;
@@ -98,6 +99,8 @@ fn main() {
             }
         }
     }
+
+    check_eiipm_in_path();
 }
 
 fn set_debug_levels(debug_mode: bool) {
