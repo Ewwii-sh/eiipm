@@ -54,7 +54,7 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
     if !repo_path.exists() {
         info!("Cloning repository {} to {}", meta.src.underline(), repo_path.display());
         let output = Command::new("git")
-            .args(&["clone", &meta.src, repo_path.to_str().unwrap()])
+            .args(&["clone", "--depth=1", &meta.src, repo_path.to_str().unwrap()])
             .output()?;
         if !output.status.success() {
             return Err(format!("Git clone failed: {}", String::from_utf8_lossy(&output.stderr)).into());
@@ -120,6 +120,7 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
             installed_files: installed_files,
             copy_files: meta.files.clone(),
             pkg_type: meta.pkg_type.clone(),
+            upstream_src: meta.src.clone(),
             build_command: meta.build.clone(),
         },
     );

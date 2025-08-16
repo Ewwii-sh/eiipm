@@ -6,7 +6,8 @@ use functions::{
     install::install_package,
     uninstall::uninstall_package,
     update::update_package,
-    list::list_packages
+    list::list_packages,
+    clearcache::clean_package_cache,
 };
 
 use clap::Parser;
@@ -33,15 +34,27 @@ fn main() {
             }
         }
         Commands::Update { package } => {
-            if Some(&package).is_some() {
-                let _ = update_package(package);
-            } else {
-                let _ = update_package(None);
+            match &package {
+                Some(name) => {
+                    if let Err(e) = update_package(&Some(name.clone())) {
+                        error!("Error updating '{}'. Caused by: {}", name, e);
+                    }
+                }
+                None => {
+                    if let Err(e) = update_package(&None) {
+                        error!("Error updating all packages: {}", e);
+                    }
+                }
             }
         }
         Commands::List(list_args) => {
             if let Err(e) = list_packages(list_args) {
                 error!("Error listing packages: {}", e);
+            }
+        }
+        Commands::ClearCache { package } => {
+            if let Err(e) = clean_package_cache(package) {
+                error!("Error clearing package cache: {}", e);
             }
         }
     }

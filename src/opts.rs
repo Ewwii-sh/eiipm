@@ -36,6 +36,11 @@ pub enum Commands {
     /// List all installed packages
     #[command(alias = "l")]
     List(ListArgs),
+    /// Clean a package or all package cache
+    #[command(alias = "cc")]
+    ClearCache {
+        package: Option<String>,
+    },
 }
 
 #[derive(Args, Debug)]

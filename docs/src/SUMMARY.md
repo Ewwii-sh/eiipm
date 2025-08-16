@@ -6,4 +6,5 @@
   - [Uninstall](./uninstall_command.md)
   - [Update](./update_command.md)
   - [List](./list_command.md)
+  - [Clear Cache](./clear_cache.md)
 - [Examples](./examples.md)

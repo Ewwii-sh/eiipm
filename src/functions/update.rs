@@ -7,11 +7,11 @@ use std::env;
 use std::process::Command;
 use colored::Colorize;
 
-pub fn update_package(package_name: Option<String>) -> Result<(), Box<dyn Error>> {
+pub fn update_package(package_name: &Option<String>) -> Result<(), Box<dyn Error>> {
     let mut db = load_db()?;
 
     if let Some(name) = package_name {
-        if let Some(pkg) = db.packages.get_mut(&name) {
+        if let Some(pkg) = db.packages.get_mut(name) {
             info!("> Updating package '{}'", name.yellow().bold());
             update_file(pkg, &name)?;
             info!("Successfully updated '{}'", name.yellow().bold());
@@ -33,16 +33,24 @@ pub fn update_package(package_name: Option<String>) -> Result<(), Box<dyn Error>
 fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box<dyn Error>> {
     let repo_path = PathBuf::from(&pkg.repo_path);
 
-    // Pull latest changes
+    // Clone/Pull latest changes
     debug!("Pullng latest version of {} using git...", package_name);
-    let output = Command::new("git")
-        .args(&["-C", repo_path.to_str().unwrap(), "pull"])
-        .output()?;
-    if !output.status.success() {
-        return Err(format!(
-            "Git pull failed: {}",
-            String::from_utf8_lossy(&output.stderr)
-        ).into());
+    if !repo_path.exists() {
+        info!("Cache not found. Cloning repository {} to {}", pkg.upstream_src.underline(), repo_path.display());
+        let output = Command::new("git")
+            .args(&["clone", "--depth=1", &pkg.upstream_src, repo_path.to_str().unwrap()])
+            .output()?;
+        if !output.status.success() {
+            return Err(format!("Git clone failed: {}", String::from_utf8_lossy(&output.stderr)).into());
+        }
+    } else {
+        info!("Repository is cached, pulling latest changes");
+        let output = Command::new("git")
+            .args(&["-C", repo_path.to_str().unwrap(), "pull"])
+            .output()?;
+        if !output.status.success() {
+            return Err(format!("Git pull failed: {}", String::from_utf8_lossy(&output.stderr)).into());
+        }
     }
 
     // Optional build step

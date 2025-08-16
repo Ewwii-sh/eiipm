@@ -2,6 +2,7 @@ pub mod install;
 pub mod uninstall;
 pub mod update;
 pub mod list;
+pub mod clearcache;
 
 use std::fs;
 use std::error::Error;
@@ -16,12 +17,19 @@ pub struct PackageDB {
     packages: HashMap<String, InstalledPackage>,
 }
 
+// Wait there dev!
+// if you add a new value to InstalledPackage, eiipm will break
+// no... no... eiipm wont break, but old db's that use the old
+// struct will break... So, remember to add `#[serde(default)]`.
+// #[serde(default)] is our lord and savior if we need to add a new value.
+
 #[derive(Deserialize, Serialize, Debug)]
 pub struct InstalledPackage {
-    repo_path: String,
+    repo_path: String, // path to cached repo. E.g. ~/.eiipm/cache/<REPO_NAME>
     installed_files: Vec<String>,
     copy_files: Vec<String>,
     pkg_type: String,
+    upstream_src: String,
     build_command: Option<String>,
 }
 
