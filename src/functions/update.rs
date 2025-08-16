@@ -1,8 +1,9 @@
 use super::{InstalledPackage, save_db, load_db}; 
-use log::info;
+use log::{info, debug};
 use std::error::Error;
 use std::path::PathBuf;
 use std::fs;
+use std::env;
 use std::process::Command;
 use colored::Colorize;
 
@@ -12,7 +13,7 @@ pub fn update_package(package_name: Option<String>) -> Result<(), Box<dyn Error>
     if let Some(name) = package_name {
         if let Some(pkg) = db.packages.get_mut(&name) {
             info!("> Updating package '{}'", name.yellow().bold());
-            update_file(pkg)?;
+            update_file(pkg, &name)?;
             info!("Successfully updated '{}'", name.yellow().bold());
         } else {
             info!("Package '{}' not found in database", name.yellow());
@@ -21,7 +22,7 @@ pub fn update_package(package_name: Option<String>) -> Result<(), Box<dyn Error>
         info!("> Updating all packages...");
         for (name, pkg) in db.packages.iter_mut() {
             info!("Updating '{}'", name.yellow().bold());
-            update_file(pkg)?;
+            update_file(pkg, name)?;
         }
     }
 
@@ -29,10 +30,11 @@ pub fn update_package(package_name: Option<String>) -> Result<(), Box<dyn Error>
     Ok(())
 }
 
-fn update_file(pkg: &mut InstalledPackage) -> Result<(), Box<dyn Error>> {
+fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box<dyn Error>> {
     let repo_path = PathBuf::from(&pkg.repo_path);
 
     // Pull latest changes
+    debug!("Pullng latest version of {} using git...", package_name);
     let output = Command::new("git")
         .args(&["-C", repo_path.to_str().unwrap(), "pull"])
         .output()?;
@@ -56,18 +58,30 @@ fn update_file(pkg: &mut InstalledPackage) -> Result<(), Box<dyn Error>> {
         }
     }
 
+    let home_dir = dirs::home_dir().ok_or("Failed to get home directory")?;
+
+    // Determine target directory
+    let target_base_dir = match pkg.pkg_type.as_str() {
+        "binary" => home_dir.join(".eiipm/bin"),
+        "theme" => env::current_dir()?,
+        "library" => home_dir.join(format!(".eiipm/lib/{}", package_name)),
+        other => return Err(format!("Unknown package type '{}'", other).into()),
+    };
+
     // Copy updated files to targets
-    for file in &pkg.files {
-        let source = repo_path.join(
-            PathBuf::from(file)
-                .file_name()
-                .ok_or("Invalid filename")?,
-        );
-        let target = PathBuf::from(file);
-        if source.exists() {
-            fs::copy(&source, &target)?;
+    for file in &pkg.copy_files {
+        let source = repo_path.join(file);
+        let target = target_base_dir.join(file);
+        if !source.exists() {
+            return Err(format!("File '{}' not found in repo", source.display()).into());
         }
+        if let Some(parent) = target.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        fs::copy(&source, &target)?;
+        info!("Copied {} -> {}", source.display(), target.display());
     }
+
 
     Ok(())
 }

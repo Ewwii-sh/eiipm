@@ -21,7 +21,7 @@ pub fn list_packages(list_args: ListArgs) -> Result<(), Box<dyn Error>> {
                     package.pkg_type,
                     package.repo_path,
                     package.build_command.clone().unwrap_or_else(|| "None".into()),
-                    package.files.join("\n    ")
+                    package.installed_files.join("\n    ")
                 );
             } else {
                 info!("{}", pkg);
@@ -41,7 +41,7 @@ pub fn list_packages(list_args: ListArgs) -> Result<(), Box<dyn Error>> {
                 package.pkg_type,
                 package.repo_path,
                 package.build_command.clone().unwrap_or_else(|| "None".into()),
-                package.files.join("\n    ")
+                package.installed_files.join("\n    ")
             );
         } else {
             info!("{}", name);

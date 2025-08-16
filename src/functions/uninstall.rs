@@ -10,7 +10,7 @@ pub fn uninstall_package(package_name: &str) -> Result<(), Box<dyn Error>> {
 
     let mut db = load_db()?;
     if let Some(pkg) = db.packages.remove(package_name) {
-        for file in pkg.files {
+        for file in pkg.installed_files {
             let path = PathBuf::from(file);
             if path.exists() {
                 fs::remove_file(&path)?;

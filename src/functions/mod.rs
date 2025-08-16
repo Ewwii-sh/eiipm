@@ -19,7 +19,8 @@ pub struct PackageDB {
 #[derive(Deserialize, Serialize, Debug)]
 pub struct InstalledPackage {
     repo_path: String,
-    files: Vec<String>,
+    installed_files: Vec<String>,
+    copy_files: Vec<String>,
     pkg_type: String,
     build_command: Option<String>,
 }

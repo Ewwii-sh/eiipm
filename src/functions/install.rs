@@ -117,7 +117,8 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
         meta.name.clone(),
         InstalledPackage {
             repo_path: repo_path.to_string_lossy().to_string(),
-            files: installed_files,
+            installed_files: installed_files,
+            copy_files: meta.files.clone(),
             pkg_type: meta.pkg_type.clone(),
             build_command: meta.build.clone(),
         },
