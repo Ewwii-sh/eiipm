@@ -1,5 +1,6 @@
 mod opts;
 mod functions;
+mod other;
 
 use opts::{PMArgs, Commands};
 use functions::{
@@ -8,6 +9,9 @@ use functions::{
     update::update_package,
     list::list_packages,
     clearcache::clean_package_cache,
+};
+use other::{
+    confirm_action::confirm,
 };
 
 use clap::Parser;
@@ -53,8 +57,20 @@ fn main() {
             }
         }
         Commands::ClearCache { package } => {
-            if let Err(e) = clean_package_cache(package) {
-                error!("Error clearing package cache: {}", e);
+            let question = match package {
+                Some(ref pkg) => format!("Delete cache of '{}' permanently?", pkg),
+                None => "Delete ALL caches permanently?".to_string(),
+            };
+
+            if confirm(&question) {
+                if let Err(e) = clean_package_cache(package) {
+                    error!("Error clearing package cache: {}", e);
+                }
+            } else {
+                match package {
+                    Some(pkg) => info!("Cache clear canceled for package '{}'", pkg),
+                    None => info!("Cache clear canceled for all packages"),
+                }
             }
         }
     }
