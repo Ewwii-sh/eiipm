@@ -40,6 +40,9 @@ pub enum Commands {
     #[command(alias = "cc")]
     ClearCache {
         package: Option<String>,
+
+        #[command(flatten)]
+        flags: ClearCacheArgs,
     },
 }
 
@@ -56,4 +59,11 @@ pub struct ListArgs {
     /// Query a package
     #[arg(short, long)]
     pub query: Option<String>,
+}
+
+#[derive(Args, Debug, Clone)]
+pub struct ClearCacheArgs {
+    /// Bypass confirmation
+    #[arg(long, short)]
+    pub force: bool,
 }

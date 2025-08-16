@@ -56,13 +56,21 @@ fn main() {
                 error!("Error listing packages: {}", e);
             }
         }
-        Commands::ClearCache { package } => {
+        Commands::ClearCache { package, flags } => {
             let question = match package {
                 Some(ref pkg) => format!("Delete cache of '{}' permanently?", pkg),
                 None => "Delete ALL caches permanently?".to_string(),
             };
 
-            if confirm(&question) {
+            let user_confirmed: bool;
+
+            if !flags.force {
+                user_confirmed = confirm(&question);
+            } else {
+                user_confirmed = true;
+            }
+
+            if user_confirmed {
                 if let Err(e) = clean_package_cache(package) {
                     error!("Error clearing package cache: {}", e);
                 }
