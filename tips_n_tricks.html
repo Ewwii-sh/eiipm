@@ -3,9 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>eiipm documentation</title>
-        
-        <meta name="robots" content="noindex" />
+        <title>Tips &amp; Tricks - eiipm documentation</title>
         
         
 
@@ -97,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="commands.html"><strong aria-hidden="true">2.</strong> Commands</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="install_command.html"><strong aria-hidden="true">2.1.</strong> Install</a></li><li class="chapter-item expanded "><a href="uninstall_command.html"><strong aria-hidden="true">2.2.</strong> Uninstall</a></li><li class="chapter-item expanded "><a href="update_command.html"><strong aria-hidden="true">2.3.</strong> Update</a></li><li class="chapter-item expanded "><a href="list_command.html"><strong aria-hidden="true">2.4.</strong> List</a></li><li class="chapter-item expanded "><a href="clear_cache.html"><strong aria-hidden="true">2.5.</strong> Clear Cache</a></li></ol></li><li class="chapter-item expanded "><a href="tips_n_tricks.html"><strong aria-hidden="true">3.</strong> Tips &amp; Tricks</a></li><li class="chapter-item expanded "><a href="examples.html"><strong aria-hidden="true">4.</strong> Examples</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="commands.html"><strong aria-hidden="true">2.</strong> Commands</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="install_command.html"><strong aria-hidden="true">2.1.</strong> Install</a></li><li class="chapter-item expanded "><a href="uninstall_command.html"><strong aria-hidden="true">2.2.</strong> Uninstall</a></li><li class="chapter-item expanded "><a href="update_command.html"><strong aria-hidden="true">2.3.</strong> Update</a></li><li class="chapter-item expanded "><a href="list_command.html"><strong aria-hidden="true">2.4.</strong> List</a></li><li class="chapter-item expanded "><a href="clear_cache.html"><strong aria-hidden="true">2.5.</strong> Clear Cache</a></li></ol></li><li class="chapter-item expanded "><a href="tips_n_tricks.html" class="active"><strong aria-hidden="true">3.</strong> Tips &amp; Tricks</a></li><li class="chapter-item expanded "><a href="examples.html"><strong aria-hidden="true">4.</strong> Examples</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -171,119 +169,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>Eiipm is a fast and eligant package manager made in rust for <a href="https://github.com/Ewwii-sh/ewwii">Ewwii</a>. Eiipm uses the package metadata from the <a href="https://github.com/Ewwii-sh/eii-manifests">Ewwii-sh/eii-manifests</a> repository where the manifests of packages are stored.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="commands"><a class="header" href="#commands">Commands</a></h1>
-<p>Eiipm offers many commands which users can use to manage ewwii and its packages.</p>
-<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
-<p>Here is a simple overview before we get started.</p>
-<table><thead><tr><th>Command</th><th>Aliases</th><th>Flags / Options</th></tr></thead><tbody>
-<tr><td><code>install &lt;PACKAGE&gt;</code></td><td><code>i</code></td><td><code>--debug</code></td></tr>
-<tr><td><code>uninstall &lt;PACKAGE&gt;</code></td><td><code>rm</code></td><td><code>--debug</code></td></tr>
-<tr><td><code>update [PACKAGE]</code></td><td><code>up</code></td><td><code>--debug</code></td></tr>
-<tr><td><code>list</code></td><td><code>l</code></td><td><code>-v</code>, <code>-t</code>, <code>-q &lt;NAME&gt;</code>, <code>--debug</code></td></tr>
-<tr><td><code>help</code></td><td>None</td><td>None</td></tr>
-<tr><td><code>-V, --version</code></td><td>None</td><td>None</td></tr>
-</tbody></table>
-<p><strong>Flags for <code>list</code>:</strong></p>
-<ul>
-<li><code>-v, --verbose</code>: verbose output</li>
-<li><code>-t, --total-count</code>: output just total package count</li>
-<li><code>-q, --query &lt;NAME&gt;</code>: query a package (works with <code>--verbose</code>)</li>
-<li><code>--debug</code>: debug logs</li>
-</ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="install"><a class="header" href="#install">Install</a></h1>
-<h3 id="command"><a class="header" href="#command">Command</a></h3>
-<p>Install a package</p>
-<pre><code class="language-bash">eiipm install &lt;PACKAGE&gt;
-# or shorter:
-eiipm i &lt;PACKAGE&gt;
-</code></pre>
-<h3 id="description"><a class="header" href="#description">Description</a></h3>
-<p>Downloads, builds (if needed), and installs the given package.</p>
-<h3 id="options"><a class="header" href="#options">Options</a></h3>
-<p><strong>--debug</strong>: Show debug logs.</p>
-<h3 id="examples"><a class="header" href="#examples">Examples</a></h3>
-<pre><code class="language-bash">eiipm install statictranspl
-eiipm i ewwii
-</code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="uninstall"><a class="header" href="#uninstall">Uninstall</a></h1>
-<h3 id="command-1"><a class="header" href="#command-1">Command</a></h3>
-<p>Uninstall a package</p>
-<pre><code class="language-bash">eiipm uninstall &lt;PACKAGE&gt;
-# or shorter:
-eiipm rm &lt;PACKAGE&gt;
-</code></pre>
-<h3 id="description-1"><a class="header" href="#description-1">Description</a></h3>
-<p>Removes the package and its tracked files from your system.</p>
-<h3 id="options-1"><a class="header" href="#options-1">Options</a></h3>
-<p><strong>--debug</strong>: Show debug logs.</p>
-<h3 id="examples-1"><a class="header" href="#examples-1">Examples</a></h3>
-<pre><code class="language-bash">eiipm rm statictranspl
-</code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="update"><a class="header" href="#update">Update</a></h1>
-<h3 id="command-2"><a class="header" href="#command-2">Command</a></h3>
-<p>Update a package or all packages</p>
-<pre><code class="language-bash">eiipm update [PACKAGE]
-# or shorter:
-eiipm up [PACKAGE]
-</code></pre>
-<h3 id="description-2"><a class="header" href="#description-2">Description</a></h3>
-<ul>
-<li>If PACKAGE is given, then it updates that package.</li>
-<li>If no package is given, then it updates all installed packages.</li>
-</ul>
-<h3 id="options-2"><a class="header" href="#options-2">Options</a></h3>
-<p><strong>--debug</strong>: Show debug logs.</p>
-<h3 id="examples-2"><a class="header" href="#examples-2">Examples</a></h3>
-<pre><code class="language-bash">eiipm up # update all
-eiipm up statictranspl  # update just one package
-</code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="list"><a class="header" href="#list">List</a></h1>
-<h3 id="command-3"><a class="header" href="#command-3">Command</a></h3>
-<p>List installed packages</p>
-<pre><code class="language-bash">eiipm list [OPTIONS]
-# or shorter:
-eiipm l [OPTIONS]
-</code></pre>
-<h3 id="description-3"><a class="header" href="#description-3">Description</a></h3>
-<p>Shows installed packages. Can display just names, detailed info, total count, or a specific package.</p>
-<h3 id="options-3"><a class="header" href="#options-3">Options</a></h3>
-<ul>
-<li><strong>-v</strong>, <strong>--verbose</strong>: Show detailed info for each package.</li>
-<li><strong>-t</strong>, <strong>--total-count</strong>: Show only the total number of installed packages.</li>
-<li><strong>-q</strong>, <strong>--query</strong> &lt;NAME&gt;: Show info for a single package (works with --verbose as well).</li>
-<li><strong>--debug</strong>: Show debug logs.</li>
-</ul>
-<h3 id="examples-3"><a class="header" href="#examples-3">Examples</a></h3>
-<pre><code class="language-bash">eiipm l
-eiipm l --verbose
-eiipm l --total-count
-eiipm l --query statictranspl
-eiipm l -q statictranspl -v
-</code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="clear-cache"><a class="header" href="#clear-cache">Clear Cache</a></h1>
-<h3 id="command-4"><a class="header" href="#command-4">Command</a></h3>
-<p>Clear package cache with confirmation.</p>
-<pre><code class="language-bash">eiipm clear-cache [PACKAGE]
-# or shorter:
-eiipm cc [PACKAGE]
-</code></pre>
-<h3 id="description-4"><a class="header" href="#description-4">Description</a></h3>
-<ul>
-<li>If PACKAGE is given, then it clears the cache of that package with confirmation.</li>
-<li>If no package is given, then it clears cache of all installed packages with confirmation.</li>
-</ul>
-<h3 id="options-4"><a class="header" href="#options-4">Options</a></h3>
-<p><strong>--force</strong>: Bypass confirmation.
-<strong>--debug</strong>: Show debug logs.</p>
-<h3 id="examples-4"><a class="header" href="#examples-4">Examples</a></h3>
-<pre><code class="language-bash">eiipm cc # clear all
-eiipm clear-cache statictranspl  # clear just one package cache
-
-eiipm cc --force # bypasses confirmation
-</code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="tips--tricks"><a class="header" href="#tips--tricks">Tips &amp; Tricks</a></h1>
+                        <h1 id="tips--tricks"><a class="header" href="#tips--tricks">Tips &amp; Tricks</a></h1>
 <p>Here are some tips and tricks which you can use to make your experience with eiipm better.</p>
 <h2 id="confirm-all-confirmation-requests"><a class="header" href="#confirm-all-confirmation-requests">Confirm all confirmation requests</a></h2>
 <p>As you may know, eiipm sometimes require user confirmation to perform certain tasks. One of the examples where eiipm asks for confirmation is in the update task when it cant resolve merge.</p>
@@ -291,34 +177,21 @@ eiipm cc --force # bypasses confirmation
 <p><strong>Example:</strong></p>
 <pre><code class="language-bash">yes | eiipm update
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="examples-5"><a class="header" href="#examples-5">Examples</a></h1>
-<p>Installing <a href="https://ewwii-sh.github.io/">ewwii</a> binary directly:</p>
-<pre><code class="language-bash"># installing
-eiipm install ewwii
-
-# update
-eiipm update ewwii
-
-# uninstall
-eiipm uninstall ewwii
-</code></pre>
-<p>Installing <a href="https://ewwii-sh.github.io/statictranspl">statictranspl</a> binary:</p>
-<pre><code class="language-bash"># installing statictranspl
-eiipm i statictranspl
-
-# one year later
-eiipm up statictranspl # update statictranspl to latest version
-
-# five years later
-eiipm rm statictranspl # uninstall statictranspl
-</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
+                            <a rel="prev" href="clear_cache.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        
 
+                        
+                            <a rel="next" href="examples.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
                         
 
                         <div style="clear: both"></div>
@@ -328,7 +201,15 @@ eiipm rm statictranspl # uninstall statictranspl
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
+                    <a rel="prev" href="clear_cache.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                
 
+                
+                    <a rel="next" href="examples.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
                 
             </nav>
 
@@ -363,14 +244,6 @@ eiipm rm statictranspl # uninstall statictranspl
         <script type="text/javascript" src="js/home_button.js"></script>
         
 
-        
-        
-        <script type="text/javascript">
-        window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
-        });
-        </script>
-        
         
 
     </body>
