@@ -100,104 +100,36 @@ pub fn pull_https(repo: &Repository) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn pull_with_rebase_or_reclone(
-    repo_url: &str,
-    repo_path: &Path,
-    depth: Option<u32>,
-) -> Result<Repository, Error> {
+pub fn pull_but_reclone_on_fail(repo_url: &str, repo_path: &Path, depth: Option<u32>) -> Result<Repository, Error> {
     // Try opening the repo if it exists
     if let Ok(repo) = Repository::open(repo_path) {
-        // First attempt regular pull
+        // Try to pull
         match pull_https(&repo) {
             Ok(_) => return Ok(repo),
-            Err(pull_err) => {
-                log::warn!("Pull failed: {}", pull_err);
+            Err(err) => {
+                log::warn!("Pull failed: {}.", err);
 
-                // Ask user if they want to try a rebase instead
-                if confirm("Pull failed. Attempt rebase on top of remote?") {
-                    match rebase_local_on_remote(&repo) {
-                        Ok(_) => return Ok(repo),
-                        Err(rebase_err) => {
-                            log::warn!("Rebase failed: {}", rebase_err);
-                        }
-                    }
-                }
+                let user_confirm = confirm("Failed to update cache (outdated). Remove and retry?");
 
-                // If rebase was refused or failed, ask to reclone
-                if confirm("Rebase failed or was skipped. Delete and reclone?") {
-                    let home_dir = dirs::home_dir()
-                        .ok_or_else(|| Error::from_str("Failed to get home directory"))?;
-                    let cache_root = home_dir.join(".eiipm/cache");
+                let home_dir = dirs::home_dir().ok_or_else(|| Error::from_str("Failed to get home directory"))?;
+                let cache_root = home_dir.join(".eiipm/cache");
 
+                if user_confirm {
                     if !repo_path.starts_with(cache_root.as_path()) {
-                        return Err(Error::from_str(&format!(
-                            "Refusing to delete outside cache: {}",
-                            repo_path.display()
-                        )));
+                        return Err(Error::from_str(&format!("Refusing to delete outside cache: {}", repo_path.display())));
                     }
 
-                    fs::remove_dir_all(repo_path)
-                        .map_err(|e| Error::from_str(&format!("Failed to remove dir: {}", e)))?;
+                    fs::remove_dir_all(repo_path).map_err(|e| Error::from_str(&format!("Failed to remove dir: {}", e)))?;
                 } else {
-                    // User refused reclone, return the repo as-is
+                    // user refused, so just return the repo as-is
                     return Ok(repo);
                 }
             }
         }
     }
 
-    // Either repo didn't exist or was removed, so clone fresh
+    // Either repo didn't exist or we removed it, so clone fresh
     clone_https(repo_url, repo_path, depth)
-}
-
-pub fn rebase_local_on_remote(repo: &Repository) -> Result<(), Error> {
-    let head_ref = repo.head()?;
-
-    let branch_name = head_ref
-        .shorthand()
-        .ok_or_else(|| Error::from_str("Invalid branch"))?;
-
-    // Find fetched commit
-    let fetch_ref = repo.find_reference(&format!("refs/remotes/origin/{}", branch_name))?;
-    let fetch_commit = repo.reference_to_annotated_commit(&fetch_ref)?;
-
-    // Attempt rebase
-    log::info!("Fast-forward not possible, trying rebase...");
-    let head_commit = repo.reference_to_annotated_commit(&head_ref)?;
-    let mut rebase = repo.rebase(
-        Some(&head_commit),
-        Some(&fetch_commit),
-        None,
-        None,
-    )?;
-
-    loop {
-        match rebase.next() {
-            Some(res) => {
-                res.map_err(|e| Error::from_str(&format!("Rebase operation failed: {}", e)))?;
-                rebase
-                    .commit(None, &repo.signature()?, None)
-                    .map_err(|e| Error::from_str(&format!("Commit during rebase failed: {}", e)))?;
-            }
-            None => break,
-        }
-    }
-
-    match rebase.finish(None) {
-        Ok(_) => {
-            repo.checkout_head(Some(git2::build::CheckoutBuilder::default().force()))?;
-            log::info!("Rebase completed successfully");
-        }
-        Err(e) => {
-            // Conflict occurred
-            return Err(Error::from_str(&format!(
-                "Rebase failed due to conflict: {}",
-                e
-            )));
-        }
-    }
-
-    Ok(())
 }
 
 /// Checks if the current branch is behind its upstream.

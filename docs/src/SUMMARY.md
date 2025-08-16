@@ -7,4 +7,5 @@
   - [Update](./update_command.md)
   - [List](./list_command.md)
   - [Clear Cache](./clear_cache.md)
+- [Tips & Tricks](./tips_n_tricks.md)
 - [Examples](./examples.md)
