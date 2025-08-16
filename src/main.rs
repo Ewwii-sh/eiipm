@@ -1,6 +1,7 @@
 mod opts;
 mod functions;
 mod other;
+mod git;
 
 use opts::{PMArgs, Commands};
 use functions::{

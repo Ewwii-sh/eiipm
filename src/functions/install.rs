@@ -9,6 +9,11 @@ use std::fs;
 use std::process::Command;
 use super::{InstalledPackage, save_db, load_db}; 
 
+use crate::git::{
+    clone_https,
+    pull_but_reclone_on_fail
+};
+
 #[derive(Deserialize, Debug)]
 struct PackageRootMeta {
     metadata: PackageMeta,
@@ -53,20 +58,12 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
     // Clone or pull repo
     if !repo_path.exists() {
         info!("Cloning repository {} to {}", meta.src.underline(), repo_path.display());
-        let output = Command::new("git")
-            .args(&["clone", "--depth=1", &meta.src, repo_path.to_str().unwrap()])
-            .output()?;
-        if !output.status.success() {
-            return Err(format!("Git clone failed: {}", String::from_utf8_lossy(&output.stderr)).into());
-        }
+        let _repo = clone_https(&meta.src, &repo_path, Some(1))
+            .map_err(|e| format!("Git clone failed: {}", e))?;
     } else {
         info!("Repository exists, pulling latest changes");
-        let output = Command::new("git")
-            .args(&["-C", repo_path.to_str().unwrap(), "pull"])
-            .output()?;
-        if !output.status.success() {
-            return Err(format!("Git pull failed: {}", String::from_utf8_lossy(&output.stderr)).into());
-        }
+        pull_but_reclone_on_fail(&meta.src, &repo_path, Some(1))
+            .map_err(|e| format!("Git pull failed: {}", e))?;
     }
 
     // Optional build step

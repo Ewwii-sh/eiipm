@@ -7,6 +7,11 @@ use std::env;
 use std::process::Command;
 use colored::Colorize;
 
+use crate::git::{
+    clone_https,
+    pull_but_reclone_on_fail
+};
+
 pub fn update_package(package_name: &Option<String>) -> Result<(), Box<dyn Error>> {
     let mut db = load_db()?;
 
@@ -34,23 +39,16 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
     let repo_path = PathBuf::from(&pkg.repo_path);
 
     // Clone/Pull latest changes
-    debug!("Pullng latest version of {} using git...", package_name);
+    debug!("Pulling latest version of {} using git...", package_name);
+
     if !repo_path.exists() {
         info!("Cache not found. Cloning repository {} to {}", pkg.upstream_src.underline(), repo_path.display());
-        let output = Command::new("git")
-            .args(&["clone", "--depth=1", &pkg.upstream_src, repo_path.to_str().unwrap()])
-            .output()?;
-        if !output.status.success() {
-            return Err(format!("Git clone failed: {}", String::from_utf8_lossy(&output.stderr)).into());
-        }
+        let _repo = clone_https(&pkg.upstream_src, &repo_path, Some(1))
+            .map_err(|e| format!("Git clone failed: {}", e))?;
     } else {
         info!("Repository is cached, pulling latest changes");
-        let output = Command::new("git")
-            .args(&["-C", repo_path.to_str().unwrap(), "pull"])
-            .output()?;
-        if !output.status.success() {
-            return Err(format!("Git pull failed: {}", String::from_utf8_lossy(&output.stderr)).into());
-        }
+        pull_but_reclone_on_fail(&pkg.upstream_src, &repo_path, Some(1))
+            .map_err(|e| format!("Git pull failed: {}", e))?;
     }
 
     // Optional build step
