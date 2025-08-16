@@ -171,21 +171,24 @@
                     <main>
                         <h1 id="clear-cache"><a class="header" href="#clear-cache">Clear Cache</a></h1>
 <h3 id="command"><a class="header" href="#command">Command</a></h3>
-<p>Clear package cache</p>
+<p>Clear package cache with confirmation.</p>
 <pre><code class="language-bash">eiipm clear-cache [PACKAGE]
 # or shorter:
 eiipm cc [PACKAGE]
 </code></pre>
 <h3 id="description"><a class="header" href="#description">Description</a></h3>
 <ul>
-<li>If PACKAGE is given, then it clears the cache of that package.</li>
-<li>If no package is given, then it clears cache of all installed packages.</li>
+<li>If PACKAGE is given, then it clears the cache of that package with confirmation.</li>
+<li>If no package is given, then it clears cache of all installed packages with confirmation.</li>
 </ul>
 <h3 id="options"><a class="header" href="#options">Options</a></h3>
-<p><strong>--debug</strong>: Show debug logs.</p>
+<p><strong>--force</strong>: Bypass confirmation.
+<strong>--debug</strong>: Show debug logs.</p>
 <h3 id="examples"><a class="header" href="#examples">Examples</a></h3>
 <pre><code class="language-bash">eiipm cc # clear all
 eiipm clear-cache statictranspl  # clear just one package cache
+
+eiipm cc --force # bypasses confirmation
 </code></pre>
 
                     </main>
