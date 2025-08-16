@@ -1,0 +1,44 @@
+use crate::git::is_upstream_ahead;
+use super::load_db;
+use std::error::Error;
+use log::info;
+use colored::Colorize;
+
+pub fn check_package_updates(package_name: &Option<String>) -> Result<(), Box<dyn Error>> {
+    let mut db = load_db()?;
+    let mut pkg_needing_update: Vec<&String> = Vec::new();
+
+    if let Some(name) = package_name {
+        if let Some(pkg) = db.packages.get_mut(name) {
+            info!("> Checking for '{}' update", name.yellow().bold());
+            let need_update = is_upstream_ahead(&pkg.repo_path)?;
+            
+            if need_update {
+                pkg_needing_update.push(name);
+            }
+        } else {
+            info!("Package '{}' not found in database", name.yellow());
+        }
+    } else {
+        info!("> Checking for updates in all packages...");
+        for (name, pkg) in db.packages.iter_mut() {
+            info!("Checking '{}'", name.yellow().bold());
+            let need_update = is_upstream_ahead(&pkg.repo_path)?;
+
+            if need_update {
+                pkg_needing_update.push(name);
+            }
+        }
+    }
+
+    if !pkg_needing_update.is_empty() {
+        info!("\nPackages needing updates:");
+        for pkg in &pkg_needing_update {
+            info!("  - {}", pkg);
+        }
+    } else {
+        info!("{}", "\nAll packages are up to date!".green());
+    }
+
+    Ok(())
+}

@@ -3,7 +3,7 @@ pub mod uninstall;
 pub mod update;
 pub mod list;
 pub mod clearcache;
-pub mod check;
+pub mod checkupdate;
 
 use std::fs;
 use std::error::Error;

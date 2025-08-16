@@ -39,10 +39,17 @@ pub enum Commands {
     /// Clean a package or all package cache with confirmation
     #[command(alias = "cc")]
     ClearCache {
+        /// Name of the package to clear cache of. Clears cache of all if not provided
         package: Option<String>,
 
         #[command(flatten)]
         flags: ClearCacheArgs,
+    },
+    /// Check a package or all package updates
+    #[command(alias = "cu")]
+    CheckUpdates {
+        /// Name of the package to clear check updates of. Checks update of all if not provided
+        package: Option<String>,
     },
 }
 

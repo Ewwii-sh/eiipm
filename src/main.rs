@@ -10,6 +10,7 @@ use functions::{
     update::update_package,
     list::list_packages,
     clearcache::clean_package_cache,
+    checkupdate::check_package_updates,
 };
 use other::{
     confirm_action::confirm,
@@ -79,6 +80,20 @@ fn main() {
                 match package {
                     Some(pkg) => info!("Cache clear canceled for package '{}'", pkg),
                     None => info!("Cache clear canceled for all packages"),
+                }
+            }
+        }
+        Commands::CheckUpdates { package } => {
+            match &package {
+                Some(name) => {
+                    if let Err(e) = check_package_updates(&Some(name.clone())) {
+                        error!("Error checking for updates in '{}'. Caused by: {}", name, e);
+                    }
+                }
+                None => {
+                    if let Err(e) = check_package_updates(&None) {
+                        error!("Error checking for updates in all packages: {}", e);
+                    }
                 }
             }
         }

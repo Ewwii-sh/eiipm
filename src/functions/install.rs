@@ -11,7 +11,7 @@ use super::{InstalledPackage, save_db, load_db};
 
 use crate::git::{
     clone_https,
-    pull_with_rebase_or_reclone
+    pull_but_reclone_on_fail
 };
 
 #[derive(Deserialize, Debug)]
@@ -62,7 +62,7 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
             .map_err(|e| format!("Git clone failed: {}", e))?;
     } else {
         info!("Repository exists, pulling latest changes");
-        pull_with_rebase_or_reclone(&meta.src, &repo_path, Some(1))
+        pull_but_reclone_on_fail(&meta.src, &repo_path, Some(1))
             .map_err(|e| format!("Git pull failed: {}", e))?;
     }
 
