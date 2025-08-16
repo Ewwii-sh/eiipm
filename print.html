@@ -97,7 +97,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="commands.html"><strong aria-hidden="true">2.</strong> Commands</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="install_command.html"><strong aria-hidden="true">2.1.</strong> Install</a></li><li class="chapter-item expanded "><a href="uninstall_command.html"><strong aria-hidden="true">2.2.</strong> Uninstall</a></li><li class="chapter-item expanded "><a href="update_command.html"><strong aria-hidden="true">2.3.</strong> Update</a></li><li class="chapter-item expanded "><a href="list_command.html"><strong aria-hidden="true">2.4.</strong> List</a></li></ol></li><li class="chapter-item expanded "><a href="examples.html"><strong aria-hidden="true">3.</strong> Examples</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="commands.html"><strong aria-hidden="true">2.</strong> Commands</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="install_command.html"><strong aria-hidden="true">2.1.</strong> Install</a></li><li class="chapter-item expanded "><a href="uninstall_command.html"><strong aria-hidden="true">2.2.</strong> Uninstall</a></li><li class="chapter-item expanded "><a href="update_command.html"><strong aria-hidden="true">2.3.</strong> Update</a></li><li class="chapter-item expanded "><a href="list_command.html"><strong aria-hidden="true">2.4.</strong> List</a></li><li class="chapter-item expanded "><a href="clear_cache.html"><strong aria-hidden="true">2.5.</strong> Clear Cache</a></li></ol></li><li class="chapter-item expanded "><a href="examples.html"><strong aria-hidden="true">3.</strong> Examples</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -262,7 +262,25 @@ eiipm l --total-count
 eiipm l --query statictranspl
 eiipm l -q statictranspl -v
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="examples-4"><a class="header" href="#examples-4">Examples</a></h1>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="clear-cache"><a class="header" href="#clear-cache">Clear Cache</a></h1>
+<h3 id="command-4"><a class="header" href="#command-4">Command</a></h3>
+<p>Clear package cache</p>
+<pre><code class="language-bash">eiipm clear-cache [PACKAGE]
+# or shorter:
+eiipm cc [PACKAGE]
+</code></pre>
+<h3 id="description-4"><a class="header" href="#description-4">Description</a></h3>
+<ul>
+<li>If PACKAGE is given, then it clears the cache of that package.</li>
+<li>If no package is given, then it clears cache of all installed packages.</li>
+</ul>
+<h3 id="options-4"><a class="header" href="#options-4">Options</a></h3>
+<p><strong>--debug</strong>: Show debug logs.</p>
+<h3 id="examples-4"><a class="header" href="#examples-4">Examples</a></h3>
+<pre><code class="language-bash">eiipm cc # clear all
+eiipm clear-cache statictranspl  # clear just one package cache
+</code></pre>
+<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="examples-5"><a class="header" href="#examples-5">Examples</a></h1>
 <p>Installing <a href="https://ewwii-sh.github.io/">ewwii</a> binary directly:</p>
 <pre><code class="language-bash"># installing
 eiipm install ewwii
