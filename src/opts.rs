@@ -30,13 +30,13 @@ pub enum Commands {
     /// Update a package or all packages
     #[command(alias = "up")]
     Update {
-        /// Name of the package to update. Updates all if not provided.
+        /// Name of the package to update. Updates all if not provided
         package: Option<String>,
     },
     /// List all installed packages
     #[command(alias = "l")]
     List(ListArgs),
-    /// Clean a package or all package cache
+    /// Clean a package or all package cache with confirmation
     #[command(alias = "cc")]
     ClearCache {
         package: Option<String>,
