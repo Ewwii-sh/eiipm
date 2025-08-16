@@ -9,7 +9,7 @@ use colored::Colorize;
 
 use crate::git::{
     clone_https,
-    pull_but_reclone_on_fail
+    pull_with_rebase_or_reclone
 };
 
 pub fn update_package(package_name: &Option<String>) -> Result<(), Box<dyn Error>> {
@@ -47,7 +47,7 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
             .map_err(|e| format!("Git clone failed: {}", e))?;
     } else {
         info!("Repository is cached, pulling latest changes");
-        pull_but_reclone_on_fail(&pkg.upstream_src, &repo_path, Some(1))
+        pull_with_rebase_or_reclone(&pkg.upstream_src, &repo_path, Some(1))
             .map_err(|e| format!("Git pull failed: {}", e))?;
     }
 
