@@ -173,6 +173,34 @@
                     <main>
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p>Eiipm is a fast and eligant package manager made in rust for <a href="https://github.com/Ewwii-sh/ewwii">Ewwii</a>. Eiipm uses the package metadata from the <a href="https://github.com/Ewwii-sh/eii-manifests">Ewwii-sh/eii-manifests</a> repository where the manifests of packages are stored.</p>
+<h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
+<p>You can install <strong>eiipm</strong> using the same <a href="https://ewwii-sh.github.io/ewwii/installation.html">methods we discussed</a> of in Ewwii:</p>
+<h4 id="1-from-source"><a class="header" href="#1-from-source">1. From source</a></h4>
+<pre><code class="language-bash">git clone https://github.com/Ewwii-sh/eiipm
+cd eiipm
+cargo build --release
+</code></pre>
+<p>This will generate the <code>eiipm</code> binary in <code>target/release</code>.</p>
+<h4 id="2-using-cargo"><a class="header" href="#2-using-cargo">2. Using Cargo</a></h4>
+<pre><code class="language-bash">cargo install --git https://github.com/Ewwii-sh/eiipm
+</code></pre>
+<p>After installation, verify it works:</p>
+<pre><code class="language-bash">eiipm --version
+</code></pre>
+<h2 id="adding-eiipm-to-path"><a class="header" href="#adding-eiipm-to-path">Adding eiipm to path</a></h2>
+<p><strong>This is a very important step</strong> which people are likely to miss. By default, eiipm installs binaries to <code>~/.eiipm/bin</code> directory. But your shell doesn't know about it yet.</p>
+<p>So, when you run something like <code>bin-you-installed</code> after installing a binary from eiipm, your shell will go like &quot;Oh, let me check in all the known areas. Nope, <code>bin-you-installed</code> is not installed...&quot;</p>
+<p>So, you should add <code>export PATH=&quot;$HOME/.eiipm/bin:$PATH&quot;</code> to your shell's configuration file.</p>
+<p><strong>Here is an example on how to do it:</strong></p>
+<pre><code class="language-bash"># Replace ~/.zshrc with your shell's configuration file.
+# For example, if you use bash, then it would be ~/.bashrc
+echo 'export PATH=&quot;$HOME/.eiipm/bin:$PATH&quot;' &gt;&gt; ~/.zshrc
+</code></pre>
+<p>I use zsh, so I added the line <code>export PATH=&quot;$HOME/.eiipm/bin:$PATH&quot;</code> in <code>~/.zshrc</code> but if you use something else, you should replace the <code>~/.zshrc</code> with your own shell's confiuration file.</p>
+<p>For example, if you use bash, add that line in <code>~/.bashrc</code>.</p>
+<blockquote>
+<p><strong>NOTE:</strong> If you dont want to use echo to add it, then you can manually edit your configuration file and add the line <code>export PATH=&quot;$HOME/.eiipm/bin:$PATH&quot;</code> in there.</p>
+</blockquote>
 <div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="commands"><a class="header" href="#commands">Commands</a></h1>
 <p>Eiipm offers many commands which users can use to manage ewwii and its packages.</p>
 <h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
