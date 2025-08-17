@@ -7,7 +7,7 @@ use std::env;
 use std::error::Error;
 use std::fs;
 use std::process::Command;
-use super::{InstalledPackage, save_db, load_db}; 
+use super::{FileEntry, InstalledPackage, save_db, load_db}; 
 
 use crate::git::{
     clone_https,
@@ -25,7 +25,7 @@ struct PackageMeta {
     #[serde(rename = "type")]
     pkg_type: String,
     src: String,
-    files: Vec<String>,
+    files: Vec<FileEntry>,
     build: Option<String>, // Optional build command
 }
 
@@ -90,20 +90,30 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
 
     // Copy files and track them
     let mut installed_files = Vec::new();
-    for file in &meta.files {
-        let source = repo_path.join(file);
+    for file_entry in &meta.files {
+        let (source, target) = match file_entry {
+            FileEntry::Flat(f) => {
+                let src = repo_path.join(f);
+                let tgt = target_base_dir.join(src.file_name().ok_or_else(|| format!("Invalid file name '{}'", f))?);
+                (src, tgt)
+            }
+            FileEntry::Detailed { src, dest } => {
+                let src_path = repo_path.join(src);
+                let tgt = match dest {
+                    Some(d) => target_base_dir.join(d),
+                    None => target_base_dir.join(src),
+                };
+                (src_path, tgt)
+            }
+        };
+
         if !source.exists() {
-            return Err(format!("File '{}' not found in repo", source.display()).into());
+            return Err(format!("File '{}' not found", source.display()).into());
         }
 
-        // Use just the filename for the target
-        let target = target_base_dir.join(
-            source
-                .file_name()
-                .ok_or_else(|| format!("Invalid file name for '{}'", file))?
-        );
-
-        fs::create_dir_all(target_base_dir.clone())?;
+        if let Some(parent) = target.parent() {
+            fs::create_dir_all(parent)?;
+        }
         fs::copy(&source, &target)?;
         installed_files.push(target.to_string_lossy().to_string());
     }

@@ -1,15 +1,21 @@
-use super::{InstalledPackage, save_db, load_db}; 
-use log::{info, debug};
+use log::{info, debug, error};
 use std::error::Error;
 use std::path::PathBuf;
 use std::fs;
-use std::env;
 use std::process::Command;
 use colored::Colorize;
 
+use super::{
+    save_db, 
+    load_db,
+    FileEntry, 
+    InstalledPackage, 
+}; 
+
 use crate::git::{
     clone_https,
-    pull_but_reclone_on_fail
+    pull_but_reclone_on_fail,
+    is_upstream_ahead,
 };
 
 pub fn update_package(package_name: &Option<String>) -> Result<(), Box<dyn Error>> {
@@ -17,17 +23,45 @@ pub fn update_package(package_name: &Option<String>) -> Result<(), Box<dyn Error
 
     if let Some(name) = package_name {
         if let Some(pkg) = db.packages.get_mut(name) {
-            info!("> Updating package '{}'", name.yellow().bold());
-            update_file(pkg, &name)?;
-            info!("Successfully updated '{}'", name.yellow().bold());
+            info!(
+                "Checking package '{}' [{}]",
+                name.yellow().bold(),
+                pkg.pkg_type
+            );
+
+            if pkg.pkg_type == "theme" {
+                info!("Skipping theme package '{}'", name.yellow().bold());
+            } else {
+                let need_update = is_upstream_ahead(&pkg.repo_path)?;
+                if need_update {
+                    info!("> Updating '{}'", name.yellow().bold());
+                    update_file(pkg, &name)?;
+                    info!("Successfully updated '{}'", name.yellow().bold());
+                } else {
+                    info!("Package '{}' is already up-to-date", name.yellow().bold());
+                }
+            }
         } else {
             info!("Package '{}' not found in database", name.yellow());
         }
     } else {
         info!("> Updating all packages...");
         for (name, pkg) in db.packages.iter_mut() {
-            info!("Updating '{}'", name.yellow().bold());
-            update_file(pkg, name)?;
+            info!("Checking package '{}' [{}]", name.yellow().bold(), pkg.pkg_type);
+
+            if pkg.pkg_type == "theme" {
+                info!("Skipping theme package '{}'", name.yellow().bold());
+                continue;
+            }
+
+            let need_update = is_upstream_ahead(&pkg.repo_path)?;
+            if need_update {
+                info!("> Updating '{}'", name.yellow().bold());
+                update_file(pkg, &name)?;
+                info!("Successfully updated '{}'", name.yellow().bold());
+            } else {
+                info!("Package '{}' is already up-to-date", name.yellow().bold());
+            }
         }
     }
 
@@ -69,25 +103,48 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
     // Determine target directory
     let target_base_dir = match pkg.pkg_type.as_str() {
         "binary" => home_dir.join(".eiipm/bin"),
-        "theme" => env::current_dir()?,
+        // "theme" => env::current_dir()?, // updating theme is risky
         "library" => home_dir.join(format!(".eiipm/lib/{}", package_name)),
         other => return Err(format!("Unknown package type '{}'", other).into()),
     };
 
+    // Just an extra caution
+    if pkg.pkg_type == "theme" {
+        error!("A theme was found in update script... skipping...");
+        return Ok(());
+    }
+
     // Copy updated files to targets
-    for file in &pkg.copy_files {
-        let source = repo_path.join(file);
-        let target = target_base_dir.join(file);
+    for file_entry in &pkg.copy_files {
+        let (source, target) = match file_entry {
+            FileEntry::Flat(f) => {
+                let src = repo_path.join(f);
+                let tgt = target_base_dir.join(
+                    src.file_name().ok_or_else(|| format!("Invalid file name '{}'", f))?
+                );
+                (src, tgt)
+            }
+            FileEntry::Detailed { src, dest } => {
+                let src_path = repo_path.join(src);
+                let tgt = match dest {
+                    Some(d) => target_base_dir.join(d),
+                    None => target_base_dir.join(src),
+                };
+                (src_path, tgt)
+            }
+        };
+
         if !source.exists() {
             return Err(format!("File '{}' not found in repo", source.display()).into());
         }
+
         if let Some(parent) = target.parent() {
             fs::create_dir_all(parent)?;
         }
+
         fs::copy(&source, &target)?;
         info!("Copied {} -> {}", source.display(), target.display());
     }
-
 
     Ok(())
 }

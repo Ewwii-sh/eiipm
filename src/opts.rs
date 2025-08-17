@@ -21,21 +21,32 @@ pub enum Commands {
         /// Name of the package to install
         package: String,
     },
+
     /// Uninstall a package
     #[command(alias = "rm")]
     Uninstall {
         /// Name of the package to uninstall
         package: String,
     },
+
     /// Update a package or all packages
     #[command(alias = "up")]
     Update {
         /// Name of the package to update. Updates all if not provided
         package: Option<String>,
     },
+
+    /// Check a package or all package updates
+    #[command(alias = "cu")]
+    CheckUpdates {
+        /// Name of the package to check updates of. Checks update of all if not provided
+        package: Option<String>,
+    },
+
     /// List all installed packages
     #[command(alias = "l")]
     List(ListArgs),
+
     /// Clean a package or all package cache with confirmation
     #[command(alias = "cc")]
     ClearCache {
@@ -45,12 +56,14 @@ pub enum Commands {
         #[command(flatten)]
         flags: ClearCacheArgs,
     },
-    /// Check a package or all package updates
-    #[command(alias = "cu")]
-    CheckUpdates {
-        /// Name of the package to clear check updates of. Checks update of all if not provided
-        package: Option<String>,
-    },
+
+    /// List all directories in cache
+    #[command(alias = "lcd")]
+    ListCacheDir,
+
+    /// Remove all broken/orphaned packages
+    #[command(alias = "pc")]
+    PurgeCache,
 }
 
 #[derive(Args, Debug)]
@@ -70,7 +83,7 @@ pub struct ListArgs {
 
 #[derive(Args, Debug, Clone)]
 pub struct ClearCacheArgs {
-    /// Bypass confirmation
+    /// Bypass all confirmation
     #[arg(long, short)]
     pub force: bool,
 }

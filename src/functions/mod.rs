@@ -4,6 +4,8 @@ pub mod update;
 pub mod list;
 pub mod clearcache;
 pub mod checkupdate;
+pub mod listcache;
+pub mod purgecache;
 
 use std::fs;
 use std::error::Error;
@@ -28,10 +30,20 @@ pub struct PackageDB {
 pub struct InstalledPackage {
     repo_path: String, // path to cached repo. E.g. ~/.eiipm/cache/<REPO_NAME>
     installed_files: Vec<String>,
-    copy_files: Vec<String>,
+    copy_files: Vec<FileEntry>,
     pkg_type: String,
     upstream_src: String,
     build_command: Option<String>,
+}
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+#[serde(untagged)]
+pub enum FileEntry {
+    Flat(String),
+    Detailed {
+        src: String,
+        dest: Option<String>,
+    },
 }
 
 pub fn load_db() -> Result<PackageDB, Box<dyn Error>> {

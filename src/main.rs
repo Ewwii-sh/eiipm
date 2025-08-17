@@ -11,6 +11,8 @@ use functions::{
     list::list_packages,
     clearcache::clean_package_cache,
     checkupdate::check_package_updates,
+    listcache::list_all_cache,
+    purgecache::purge_cache,
 };
 use other::{
     confirm_action::confirm,
@@ -96,6 +98,16 @@ fn main() {
                         error!("Error checking for updates in all packages: {}", e);
                     }
                 }
+            }
+        }
+        Commands::ListCacheDir => {
+            if let Err(e) = list_all_cache() {
+                error!("Error listing cache: {}", e);
+            }
+        }
+        Commands::PurgeCache => {
+            if let Err(e) = purge_cache() {
+                error!("Error purging cache: {}", e);
             }
         }
     }
