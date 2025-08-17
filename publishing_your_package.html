@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Uninstall - eiipm documentation</title>
+        <title>Publishing your package - eiipm documentation</title>
         
         
 
@@ -95,7 +95,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="commands.html"><strong aria-hidden="true">2.</strong> Commands</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="install_command.html"><strong aria-hidden="true">2.1.</strong> Install</a></li><li class="chapter-item expanded "><a href="uninstall_command.html" class="active"><strong aria-hidden="true">2.2.</strong> Uninstall</a></li><li class="chapter-item expanded "><a href="update_command.html"><strong aria-hidden="true">2.3.</strong> Update</a></li><li class="chapter-item expanded "><a href="check_updates.html"><strong aria-hidden="true">2.4.</strong> Check Updates</a></li><li class="chapter-item expanded "><a href="list_command.html"><strong aria-hidden="true">2.5.</strong> List</a></li><li class="chapter-item expanded "><a href="clear_cache.html"><strong aria-hidden="true">2.6.</strong> Clear Cache</a></li></ol></li><li class="chapter-item expanded "><a href="tips_n_tricks.html"><strong aria-hidden="true">3.</strong> Tips &amp; Tricks</a></li><li class="chapter-item expanded "><a href="publishing_your_package.html"><strong aria-hidden="true">4.</strong> Publishing your package</a></li><li class="chapter-item expanded "><a href="examples.html"><strong aria-hidden="true">5.</strong> Examples</a></li></ol>
+                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="commands.html"><strong aria-hidden="true">2.</strong> Commands</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="install_command.html"><strong aria-hidden="true">2.1.</strong> Install</a></li><li class="chapter-item expanded "><a href="uninstall_command.html"><strong aria-hidden="true">2.2.</strong> Uninstall</a></li><li class="chapter-item expanded "><a href="update_command.html"><strong aria-hidden="true">2.3.</strong> Update</a></li><li class="chapter-item expanded "><a href="check_updates.html"><strong aria-hidden="true">2.4.</strong> Check Updates</a></li><li class="chapter-item expanded "><a href="list_command.html"><strong aria-hidden="true">2.5.</strong> List</a></li><li class="chapter-item expanded "><a href="clear_cache.html"><strong aria-hidden="true">2.6.</strong> Clear Cache</a></li></ol></li><li class="chapter-item expanded "><a href="tips_n_tricks.html"><strong aria-hidden="true">3.</strong> Tips &amp; Tricks</a></li><li class="chapter-item expanded "><a href="publishing_your_package.html" class="active"><strong aria-hidden="true">4.</strong> Publishing your package</a></li><li class="chapter-item expanded "><a href="examples.html"><strong aria-hidden="true">5.</strong> Examples</a></li></ol>
             </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
@@ -169,33 +169,24 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="uninstall"><a class="header" href="#uninstall">Uninstall</a></h1>
-<h3 id="command"><a class="header" href="#command">Command</a></h3>
-<p>Uninstall a package</p>
-<pre><code class="language-bash">eiipm uninstall &lt;PACKAGE&gt;
-# or shorter:
-eiipm rm &lt;PACKAGE&gt;
-</code></pre>
-<h3 id="description"><a class="header" href="#description">Description</a></h3>
-<p>Removes the package and its tracked files from your system.</p>
-<h3 id="options"><a class="header" href="#options">Options</a></h3>
-<p><strong>--debug</strong>: Show debug logs.</p>
-<h3 id="examples"><a class="header" href="#examples">Examples</a></h3>
-<pre><code class="language-bash">eiipm rm statictranspl
-</code></pre>
+                        <h1 id="publishing-your-package"><a class="header" href="#publishing-your-package">Publishing Your Package</a></h1>
+<p>Created a package for Ewwii and want it to be easily installable via <strong>eiipm</strong>? That’s fantastic! By publishing your package to <strong>eii-manifests</strong>, you make it instantly accessible to the entire Ewwii community, letting users install it with a single command.</p>
+<p>Eiipm pulls all package metadata directly from <strong>eii-manifests</strong>, so the first step is to register your package there. This ensures that your package is correctly tracked, built, and installed for everyone. Once registered, users can seamlessly download, build (if necessary), and use your package without worrying about paths, dependencies, or manual setup.</p>
+<p>Check out the <a href="https://github.com/Ewwii-sh/eii-manifests?tab=readme-ov-file#adding-your-package-to-manifests">Adding Your Package to Manifests guide</a> for a detailed, step-by-step walkthrough. Following the guide will help you structure your package correctly, define its metadata, and make sure it installs smoothly for all users.</p>
+<p>Publishing isn’t just about sharing code. It’s about contributing to a growing ecosystem. So take the leap, add your package, and become a part of the Ewwii community!</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
                         
-                            <a rel="prev" href="install_command.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="tips_n_tricks.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
                         
 
                         
-                            <a rel="next" href="update_command.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next" href="examples.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
                         
@@ -207,13 +198,13 @@ eiipm rm &lt;PACKAGE&gt;
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
                 
-                    <a rel="prev" href="install_command.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="tips_n_tricks.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
                 
 
                 
-                    <a rel="next" href="update_command.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next" href="examples.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
                 
