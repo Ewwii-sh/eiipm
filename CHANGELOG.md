@@ -5,6 +5,12 @@ All notable changes to `eiipm` are documented here.
 This changelog follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format,
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - [UNRELEASED]
+
+### Changed
+
+- Vendored libgit2 to be compiled along with eiipm.
+
 ## [0.2.0] - 2025-08-18
 
 ### Added
@@ -13,10 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - A check to see if package needs update before updating.
 - **list-cache** (or **lc**) command for listing all cache.
 - **purge-cache** (or **pc**) command to remove broken/orphaned cache.
-
-### Changed
-
-- Vendored libgit2 to be compiled along with eiipm.
 
 ### Removed
 
