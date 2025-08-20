@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - **list-cache** (or **lc**) command for listing all cache.
 - **purge-cache** (or **pc**) command to remove broken/orphaned cache.
 
+### Changed
+
+- Vendored libgit2 to be compiled along with eiipm.
+
 ### Removed
 
 - Updation of themes.
