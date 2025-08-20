@@ -23,7 +23,7 @@ For a full list of commands and their uses, checkout [eiipm documentation](https
 
 ## Adding to path
 
-If you install a binary from **eiipm**, it may not work if you type the name of the binary in the terminal directly. You would need to add eiipm to your path.
+If you install a binary from **eiipm**, your shell may say that the binary is not found if you type the name of the binary you installed in the terminal directly. To avoid this, you would need to add eiipm to your path.
 
 To add eiipm to your path, add `export PATH="$HOME/.eiipm/bin:$PATH"` to your shell's configuration file.
 
