@@ -1,4 +1,4 @@
-use clap::{Parser, Subcommand, Args};
+use clap::{Args, Parser, Subcommand};
 
 /// Eiipm package manager for ewwii.
 #[derive(Parser, Debug)]
@@ -8,7 +8,7 @@ pub struct PMArgs {
     /// Show debug logs
     #[arg(long, global = true)]
     pub debug: bool,
-    
+
     #[command(subcommand)]
     pub command: Commands,
 }
@@ -72,7 +72,7 @@ pub enum Commands {
         package: String,
 
         #[command(flatten)]
-        flags: SearchArgs
+        flags: SearchArgs,
     },
 }
 

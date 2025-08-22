@@ -1,24 +1,15 @@
-use colored::{Colorize};
+use super::{FileEntry, InstalledPackage, http_get_string, load_db, save_db};
+use colored::Colorize;
 use dirs;
+use glob::glob;
 use log::{info, trace};
-use serde::{Deserialize};
+use serde::Deserialize;
 use std::env;
 use std::error::Error;
 use std::fs;
 use std::process::Command;
-use super::{
-    FileEntry,
-    InstalledPackage,
-    save_db,
-    load_db,
-    http_get_string
-}; 
-use glob::glob;
 
-use crate::git::{
-    clone_https,
-    pull_but_reclone_on_fail
-};
+use crate::git::{clone_https, pull_but_reclone_on_fail};
 
 #[derive(Deserialize, Debug)]
 struct PackageRootMeta {
@@ -63,7 +54,11 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
 
     // Clone or pull repo
     if !repo_path.exists() {
-        info!("Cloning repository {} to {}", meta.src.underline(), repo_path.display());
+        info!(
+            "Cloning repository {} to {}",
+            meta.src.underline(),
+            repo_path.display()
+        );
         let _repo = clone_https(&meta.src, &repo_path, Some(1))
             .map_err(|e| format!("Git clone failed: {}", e))?;
     } else {
@@ -103,10 +98,7 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
                 .expect("Invalid glob")
                 .filter_map(Result::ok)
                 .map(|src| {
-                    let tgt = target_base_dir.join(
-                        src.file_name()
-                            .expect("Invalid file name"),
-                    );
+                    let tgt = target_base_dir.join(src.file_name().expect("Invalid file name"));
                     (src, tgt)
                 })
                 .collect(),
@@ -117,7 +109,7 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
                 .map(|src_path| {
                     let tgt = match dest {
                         Some(d) => target_base_dir.join(d),
-                        None => target_base_dir.join(src)
+                        None => target_base_dir.join(src),
                     };
                     (src_path, tgt)
                 })
@@ -134,7 +126,7 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
             }
             fs::copy(&source, &target)?;
             installed_files.push(target.to_string_lossy().to_string());
-        };
+        }
     }
 
     // Update DB
@@ -152,7 +144,9 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
     );
     save_db(&db)?;
 
-    info!("Installation complete for '{}'", package_name.yellow().bold());
+    info!(
+        "Installation complete for '{}'",
+        package_name.yellow().bold()
+    );
     Ok(())
 }
-

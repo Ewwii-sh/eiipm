@@ -1,27 +1,18 @@
-mod opts;
 mod functions;
-mod other;
 mod git;
+mod opts;
+mod other;
 
-use opts::{PMArgs, Commands};
 use functions::{
-    install::install_package,
-    uninstall::uninstall_package,
-    update::update_package,
-    list::list_packages,
-    clearcache::clean_package_cache,
-    checkupdate::check_package_updates,
-    listcache::list_all_cache,
-    purgecache::purge_cache,
-    search::search_package,
+    checkupdate::check_package_updates, clearcache::clean_package_cache, install::install_package,
+    list::list_packages, listcache::list_all_cache, purgecache::purge_cache,
+    search::search_package, uninstall::uninstall_package, update::update_package,
 };
-use other::{
-    confirm_action::confirm,
-    run_checks::check_eiipm_in_path,
-};
+use opts::{Commands, PMArgs};
+use other::{confirm_action::confirm, run_checks::check_eiipm_in_path};
 
 use clap::Parser;
-use log::{info, error, Level};
+use log::{Level, error, info};
 
 fn main() {
     let args = PMArgs::parse();
@@ -43,20 +34,18 @@ fn main() {
                 error!("Error uninstalling '{}': {}", package, e);
             }
         }
-        Commands::Update { package } => {
-            match &package {
-                Some(name) => {
-                    if let Err(e) = update_package(&Some(name.clone())) {
-                        error!("Error updating '{}'. Caused by: {}", name, e);
-                    }
-                }
-                None => {
-                    if let Err(e) = update_package(&None) {
-                        error!("Error updating all packages: {}", e);
-                    }
+        Commands::Update { package } => match &package {
+            Some(name) => {
+                if let Err(e) = update_package(&Some(name.clone())) {
+                    error!("Error updating '{}'. Caused by: {}", name, e);
                 }
             }
-        }
+            None => {
+                if let Err(e) = update_package(&None) {
+                    error!("Error updating all packages: {}", e);
+                }
+            }
+        },
         Commands::List(list_args) => {
             if let Err(e) = list_packages(list_args) {
                 error!("Error listing packages: {}", e);
@@ -87,20 +76,18 @@ fn main() {
                 }
             }
         }
-        Commands::CheckUpdates { package } => {
-            match &package {
-                Some(name) => {
-                    if let Err(e) = check_package_updates(&Some(name.clone())) {
-                        error!("Error checking for updates in '{}'. Caused by: {}", name, e);
-                    }
-                }
-                None => {
-                    if let Err(e) = check_package_updates(&None) {
-                        error!("Error checking for updates in all packages: {}", e);
-                    }
+        Commands::CheckUpdates { package } => match &package {
+            Some(name) => {
+                if let Err(e) = check_package_updates(&Some(name.clone())) {
+                    error!("Error checking for updates in '{}'. Caused by: {}", name, e);
                 }
             }
-        }
+            None => {
+                if let Err(e) = check_package_updates(&None) {
+                    error!("Error checking for updates in all packages: {}", e);
+                }
+            }
+        },
         Commands::ListCacheDir => {
             if let Err(e) = list_all_cache() {
                 error!("Error listing cache: {}", e);
@@ -131,16 +118,17 @@ fn set_debug_levels(debug_mode: bool) {
             .format_module_path(true)
             .format_level(true);
     } else {
-        builder.format(|buf, record| {
-            use std::io::Write;
+        builder
+            .format(|buf, record| {
+                use std::io::Write;
 
-            match record.level() {
-                Level::Warn => writeln!(buf, "[WARN] {}", record.args()),
-                Level::Error => writeln!(buf, "[ERROR] {}", record.args()),
-                _ => writeln!(buf, "{}", record.args()),
-            }
-        })
-        .filter_level(log::LevelFilter::Info);
+                match record.level() {
+                    Level::Warn => writeln!(buf, "[WARN] {}", record.args()),
+                    Level::Error => writeln!(buf, "[ERROR] {}", record.args()),
+                    _ => writeln!(buf, "{}", record.args()),
+                }
+            })
+            .filter_level(log::LevelFilter::Info);
     }
 
     builder.init();

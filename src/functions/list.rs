@@ -1,7 +1,7 @@
-use super::load_db; 
-use log::{info, error};
-use std::error::Error;
+use super::load_db;
 use crate::opts::ListArgs;
+use log::{error, info};
+use std::error::Error;
 
 pub fn list_packages(list_args: ListArgs) -> Result<(), Box<dyn Error>> {
     let db = load_db()?;
@@ -20,7 +20,10 @@ pub fn list_packages(list_args: ListArgs) -> Result<(), Box<dyn Error>> {
                     pkg,
                     package.pkg_type,
                     package.repo_path,
-                    package.build_command.clone().unwrap_or_else(|| "None".into()),
+                    package
+                        .build_command
+                        .clone()
+                        .unwrap_or_else(|| "None".into()),
                     package.installed_files.join("\n    ")
                 );
             } else {
@@ -40,7 +43,10 @@ pub fn list_packages(list_args: ListArgs) -> Result<(), Box<dyn Error>> {
                 name,
                 package.pkg_type,
                 package.repo_path,
-                package.build_command.clone().unwrap_or_else(|| "None".into()),
+                package
+                    .build_command
+                    .clone()
+                    .unwrap_or_else(|| "None".into()),
                 package.installed_files.join("\n    ")
             );
         } else {

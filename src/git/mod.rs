@@ -1,12 +1,9 @@
 //! Working with git2 API's
 
-use git2::{
-    Repository, Cred, RemoteCallbacks, 
-    FetchOptions, build::RepoBuilder, Error
-};
-use std::path::Path;
-use std::fs;
 use crate::other::confirm_action::confirm;
+use git2::{Cred, Error, FetchOptions, RemoteCallbacks, Repository, build::RepoBuilder};
+use std::fs;
+use std::path::Path;
 
 pub fn clone_https(repo_url: &str, path: &Path, depth: Option<u32>) -> Result<Repository, Error> {
     let callbacks = RemoteCallbacks::new();
@@ -64,14 +61,16 @@ pub fn pull_https(repo: &Repository) -> Result<(), Error> {
         let head_tree = repo.find_commit(head_commit.id())?.tree()?;
         let fetch_tree = repo.find_commit(fetch_commit.id())?.tree()?;
 
-        let ancestor_commit = repo.merge_base(head_commit.id(), fetch_commit.id())
+        let ancestor_commit = repo
+            .merge_base(head_commit.id(), fetch_commit.id())
             .and_then(|oid| repo.find_commit(oid))?;
         let ancestor_tree = ancestor_commit.tree()?;
 
-
         let mut idx = repo.merge_trees(&ancestor_tree, &head_tree, &fetch_tree, None)?;
         if idx.has_conflicts() {
-            return Err(Error::from_str("Merge conflicts detected. Please resolve manually."));
+            return Err(Error::from_str(
+                "Merge conflicts detected. Please resolve manually.",
+            ));
         }
 
         // Write the merged tree
@@ -100,7 +99,11 @@ pub fn pull_https(repo: &Repository) -> Result<(), Error> {
     Ok(())
 }
 
-pub fn pull_but_reclone_on_fail(repo_url: &str, repo_path: &Path, depth: Option<u32>) -> Result<Repository, Error> {
+pub fn pull_but_reclone_on_fail(
+    repo_url: &str,
+    repo_path: &Path,
+    depth: Option<u32>,
+) -> Result<Repository, Error> {
     // Try opening the repo if it exists
     if let Ok(repo) = Repository::open(repo_path) {
         // Try to pull
@@ -111,15 +114,20 @@ pub fn pull_but_reclone_on_fail(repo_url: &str, repo_path: &Path, depth: Option<
 
                 let user_confirm = confirm("Failed to update cache (outdated). Remove and retry?");
 
-                let home_dir = dirs::home_dir().ok_or_else(|| Error::from_str("Failed to get home directory"))?;
+                let home_dir = dirs::home_dir()
+                    .ok_or_else(|| Error::from_str("Failed to get home directory"))?;
                 let cache_root = home_dir.join(".eiipm/cache");
 
                 if user_confirm {
                     if !repo_path.starts_with(cache_root.as_path()) {
-                        return Err(Error::from_str(&format!("Refusing to delete outside cache: {}", repo_path.display())));
+                        return Err(Error::from_str(&format!(
+                            "Refusing to delete outside cache: {}",
+                            repo_path.display()
+                        )));
                     }
 
-                    fs::remove_dir_all(repo_path).map_err(|e| Error::from_str(&format!("Failed to remove dir: {}", e)))?;
+                    fs::remove_dir_all(repo_path)
+                        .map_err(|e| Error::from_str(&format!("Failed to remove dir: {}", e)))?;
                 } else {
                     // user refused, so just return the repo as-is
                     return Ok(repo);
@@ -136,12 +144,13 @@ pub fn pull_but_reclone_on_fail(repo_url: &str, repo_path: &Path, depth: Option<
 /// Returns `Ok(true)` if the upstream has commits the local branch doesn't have.
 pub fn is_upstream_ahead(repo_path: &str) -> Result<bool, Error> {
     let repo = Repository::open(repo_path)?;
-    
+
     // Get the current branch
     let head_ref = repo.head()?;
-    let branch_name = head_ref.shorthand()
+    let branch_name = head_ref
+        .shorthand()
         .ok_or_else(|| Error::from_str("Invalid branch name"))?;
-    
+
     // Set up fetch options with authentication callbacks
     let mut callbacks = RemoteCallbacks::new();
     callbacks.credentials(|_url, username_from_url, _allowed_types| {
@@ -149,19 +158,25 @@ pub fn is_upstream_ahead(repo_path: &str) -> Result<bool, Error> {
     });
     let mut fetch_options = FetchOptions::new();
     fetch_options.remote_callbacks(callbacks);
-    
+
     // Fetch from origin
     let mut remote = repo.find_remote("origin")?;
     remote.fetch(&[branch_name], Some(&mut fetch_options), None)?;
-    
+
     // Resolve upstream
     let local_branch = repo.find_branch(branch_name, git2::BranchType::Local)?;
     let upstream_branch = local_branch.upstream()?;
-    
-    let local_oid = local_branch.get().target().ok_or_else(|| Error::from_str("Local branch has no commit"))?;
-    let upstream_oid = upstream_branch.get().target().ok_or_else(|| Error::from_str("Upstream branch has no commit"))?;
-    
+
+    let local_oid = local_branch
+        .get()
+        .target()
+        .ok_or_else(|| Error::from_str("Local branch has no commit"))?;
+    let upstream_oid = upstream_branch
+        .get()
+        .target()
+        .ok_or_else(|| Error::from_str("Upstream branch has no commit"))?;
+
     let (_ahead, behind) = repo.graph_ahead_behind(local_oid, upstream_oid)?;
-    
+
     Ok(behind > 0)
 }

@@ -1,5 +1,5 @@
-use std::fs;
 use log::{error, info};
+use std::fs;
 
 pub fn list_all_cache() -> Result<(), Box<dyn std::error::Error>> {
     let home_dir = dirs::home_dir().ok_or("Failed to get home directory")?;

@@ -1,19 +1,19 @@
-pub mod install;
-pub mod uninstall;
-pub mod update;
-pub mod list;
-pub mod clearcache;
 pub mod checkupdate;
+pub mod clearcache;
+pub mod install;
+pub mod list;
 pub mod listcache;
 pub mod purgecache;
 pub mod search;
+pub mod uninstall;
+pub mod update;
 
-use std::fs;
-use std::error::Error;
-use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use dirs;
 use reqwest::blocking::get;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use std::error::Error;
+use std::fs;
 
 pub const DB_FILE: &str = ".local/share/eiipm/installed.toml";
 
@@ -42,10 +42,7 @@ pub struct InstalledPackage {
 #[serde(untagged)]
 pub enum FileEntry {
     Flat(String),
-    Detailed {
-        src: String,
-        dest: Option<String>,
-    },
+    Detailed { src: String, dest: Option<String> },
 }
 
 pub fn load_db() -> Result<PackageDB, Box<dyn Error>> {
@@ -56,7 +53,9 @@ pub fn load_db() -> Result<PackageDB, Box<dyn Error>> {
         let db: PackageDB = toml::from_str(&content)?;
         Ok(db)
     } else {
-        Ok(PackageDB { packages: HashMap::new() })
+        Ok(PackageDB {
+            packages: HashMap::new(),
+        })
     }
 }
 
@@ -80,4 +79,3 @@ pub fn http_get_string(url: &str) -> Result<String, Box<dyn Error>> {
     }
     Ok(response.text()?)
 }
-

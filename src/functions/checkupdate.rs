@@ -1,8 +1,8 @@
-use crate::git::is_upstream_ahead;
 use super::load_db;
-use std::error::Error;
-use log::info;
+use crate::git::is_upstream_ahead;
 use colored::Colorize;
+use log::info;
+use std::error::Error;
 
 pub fn check_package_updates(package_name: &Option<String>) -> Result<(), Box<dyn Error>> {
     let mut db = load_db()?;
@@ -12,7 +12,7 @@ pub fn check_package_updates(package_name: &Option<String>) -> Result<(), Box<dy
         if let Some(pkg) = db.packages.get_mut(name) {
             info!("> Checking for '{}' update", name.yellow().bold());
             let need_update = is_upstream_ahead(&pkg.repo_path)?;
-            
+
             if need_update {
                 pkg_needing_update.push(name);
             }

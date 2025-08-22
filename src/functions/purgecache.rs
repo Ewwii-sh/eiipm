@@ -1,12 +1,12 @@
+use super::load_db;
 use colored::Colorize;
-use log::{info, error};
+use log::{error, info};
 use std::collections::HashSet;
 use std::fs;
 use std::path::Path;
-use super::load_db;
 
 pub fn purge_cache() -> Result<(), Box<dyn std::error::Error>> {
-    let db = load_db()?; 
+    let db = load_db()?;
     let home_dir = dirs::home_dir().ok_or("Failed to get home directory")?;
     let cache_root = home_dir.join(".eiipm/cache");
 
@@ -47,7 +47,15 @@ pub fn purge_cache() -> Result<(), Box<dyn std::error::Error>> {
     if orphan_count == 0 {
         info!("{}", "Cache is clean. Nothing to remove.".green());
     } else {
-        info!("{}", format!("\nRemoved {} orphaned cache director{}", orphan_count, if orphan_count == 1 { "y" } else { "ies" }).yellow());
+        info!(
+            "{}",
+            format!(
+                "\nRemoved {} orphaned cache director{}",
+                orphan_count,
+                if orphan_count == 1 { "y" } else { "ies" }
+            )
+            .yellow()
+        );
     }
 
     Ok(())

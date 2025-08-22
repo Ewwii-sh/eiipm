@@ -1,23 +1,14 @@
-use log::{info, debug, error};
-use std::error::Error;
-use std::path::PathBuf;
-use std::fs;
-use std::process::Command;
 use colored::Colorize;
 use glob::glob;
+use log::{debug, error, info};
+use std::error::Error;
+use std::fs;
+use std::path::PathBuf;
+use std::process::Command;
 
-use super::{
-    save_db, 
-    load_db,
-    FileEntry, 
-    InstalledPackage, 
-}; 
+use super::{FileEntry, InstalledPackage, load_db, save_db};
 
-use crate::git::{
-    clone_https,
-    pull_but_reclone_on_fail,
-    is_upstream_ahead,
-};
+use crate::git::{clone_https, is_upstream_ahead, pull_but_reclone_on_fail};
 
 pub fn update_package(package_name: &Option<String>) -> Result<(), Box<dyn Error>> {
     let mut db = load_db()?;
@@ -48,7 +39,11 @@ pub fn update_package(package_name: &Option<String>) -> Result<(), Box<dyn Error
     } else {
         info!("> Updating all packages...");
         for (name, pkg) in db.packages.iter_mut() {
-            info!("Checking package '{}' [{}]", name.yellow().bold(), pkg.pkg_type);
+            info!(
+                "Checking package '{}' [{}]",
+                name.yellow().bold(),
+                pkg.pkg_type
+            );
 
             if pkg.pkg_type == "theme" {
                 info!("Skipping theme package '{}'", name.yellow().bold());
@@ -77,7 +72,11 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
     debug!("Pulling latest version of {} using git...", package_name);
 
     if !repo_path.exists() {
-        info!("Cache not found. Cloning repository {} to {}", pkg.upstream_src.underline(), repo_path.display());
+        info!(
+            "Cache not found. Cloning repository {} to {}",
+            pkg.upstream_src.underline(),
+            repo_path.display()
+        );
         let _repo = clone_https(&pkg.upstream_src, &repo_path, Some(1))
             .map_err(|e| format!("Git clone failed: {}", e))?;
     } else {
@@ -123,10 +122,7 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
                 .expect("Invalid glob")
                 .filter_map(Result::ok)
                 .map(|src| {
-                    let tgt = target_base_dir.join(
-                        src.file_name()
-                            .expect("Invalid file name"),
-                    );
+                    let tgt = target_base_dir.join(src.file_name().expect("Invalid file name"));
                     (src, tgt)
                 })
                 .collect(),
@@ -137,7 +133,7 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
                 .map(|src_path| {
                     let tgt = match dest {
                         Some(d) => target_base_dir.join(d),
-                        None => target_base_dir.join(src)
+                        None => target_base_dir.join(src),
                     };
                     (src_path, tgt)
                 })
@@ -155,7 +151,7 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
 
             fs::copy(&source, &target)?;
             info!("Copied {} -> {}", source.display(), target.display());
-        };
+        }
     }
 
     Ok(())

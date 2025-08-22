@@ -1,7 +1,7 @@
+use colored::Colorize;
+use log::{error, info};
 use std::env;
 use std::path::PathBuf;
-use log::{error, info};
-use colored::Colorize;
 
 pub fn check_eiipm_in_path() {
     let target_dir: PathBuf = match dirs::home_dir() {
@@ -30,7 +30,9 @@ pub fn check_eiipm_in_path() {
             target_dir.display(),
             "export PATH=\"$HOME/.eiipm/bin:$PATH\"".yellow(),
             "(adjust if necessary)".dimmed(),
-            "https://ewwii-sh.github.io/docs/package-manager/overview/#adding-eiipm-to-path".underline().blue()
+            "https://ewwii-sh.github.io/docs/package-manager/overview/#adding-eiipm-to-path"
+                .underline()
+                .blue()
         );
 
         info!("{}", msg.yellow()); // dont use warn!() as it will add [WARN] label
