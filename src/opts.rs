@@ -64,6 +64,16 @@ pub enum Commands {
     /// Remove all broken/orphaned packages
     #[command(alias = "pc")]
     PurgeCache,
+
+    /// Search for a package in eii-manifests
+    #[command(alias = "s")]
+    Search {
+        /// Name of the package to search for
+        package: String,
+
+        #[command(flatten)]
+        flags: SearchArgs
+    },
 }
 
 #[derive(Args, Debug)]
@@ -86,4 +96,11 @@ pub struct ClearCacheArgs {
     /// Bypass all confirmation
     #[arg(long, short)]
     pub force: bool,
+}
+
+#[derive(Args, Debug)]
+pub struct SearchArgs {
+    /// Log the metadata of the searched file
+    #[arg(long, short)]
+    pub log_metadata: bool,
 }

@@ -137,10 +137,7 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
                 .map(|src_path| {
                     let tgt = match dest {
                         Some(d) => target_base_dir.join(d),
-                        None => target_base_dir.join(
-                            src_path.file_name()
-                                .expect("Invalid file name"),
-                        ),
+                        None => target_base_dir.join(src)
                     };
                     (src_path, tgt)
                 })

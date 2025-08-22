@@ -1,13 +1,18 @@
 use colored::{Colorize};
 use dirs;
-use log::{debug, info, trace};
-use reqwest::blocking::get;
+use log::{info, trace};
 use serde::{Deserialize};
 use std::env;
 use std::error::Error;
 use std::fs;
 use std::process::Command;
-use super::{FileEntry, InstalledPackage, save_db, load_db}; 
+use super::{
+    FileEntry,
+    InstalledPackage,
+    save_db,
+    load_db,
+    http_get_string
+}; 
 use glob::glob;
 
 use crate::git::{
@@ -112,10 +117,7 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
                 .map(|src_path| {
                     let tgt = match dest {
                         Some(d) => target_base_dir.join(d),
-                        None => target_base_dir.join(
-                            src_path.file_name()
-                                .expect("Invalid file name"),
-                        ),
+                        None => target_base_dir.join(src)
                     };
                     (src_path, tgt)
                 })
@@ -154,11 +156,3 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn http_get_string(url: &str) -> Result<String, Box<dyn Error>> {
-    debug!("Sending GET request to {}", url);
-    let response = get(url)?;
-    if !response.status().is_success() {
-        return Err(format!("Failed to fetch URL {}: HTTP {}", url, response.status()).into());
-    }
-    Ok(response.text()?)
-}

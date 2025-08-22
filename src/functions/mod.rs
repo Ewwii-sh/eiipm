@@ -6,12 +6,14 @@ pub mod clearcache;
 pub mod checkupdate;
 pub mod listcache;
 pub mod purgecache;
+pub mod search;
 
 use std::fs;
 use std::error::Error;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use dirs;
+use reqwest::blocking::get;
 
 pub const DB_FILE: &str = ".local/share/eiipm/installed.toml";
 
@@ -68,3 +70,14 @@ pub fn save_db(db: &PackageDB) -> Result<(), Box<dyn Error>> {
     fs::write(db_path, content)?;
     Ok(())
 }
+
+// Sending requests to url's
+pub fn http_get_string(url: &str) -> Result<String, Box<dyn Error>> {
+    log::debug!("Sending GET request to {}", url);
+    let response = get(url)?;
+    if !response.status().is_success() {
+        return Err(format!("Failed to fetch URL {}: HTTP {}", url, response.status()).into());
+    }
+    Ok(response.text()?)
+}
+

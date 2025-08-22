@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - Support for unix glob patterns in files key (toml).
+- **Search** command with `--log-metadata` (or `-l`) flag.
 
 ### Changed
 
@@ -32,11 +33,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- **install** flag
-- **uninstall** flag
-- **update** flag
-- **list** flag
-- **clear-cache** flag
-- **check-update** flag
+- **install** command
+- **uninstall** command
+- **update** command
+- **list** command
+- **clear-cache** command
+- **check-update** command
 - **[git2](https://docs.rs/git2/latest/git2/)** based version control
 - **Eiipm** not in path warning

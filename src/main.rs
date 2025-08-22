@@ -13,6 +13,7 @@ use functions::{
     checkupdate::check_package_updates,
     listcache::list_all_cache,
     purgecache::purge_cache,
+    search::search_package,
 };
 use other::{
     confirm_action::confirm,
@@ -108,6 +109,11 @@ fn main() {
         Commands::PurgeCache => {
             if let Err(e) = purge_cache() {
                 error!("Error purging cache: {}", e);
+            }
+        }
+        Commands::Search { package, flags } => {
+            if let Err(e) = search_package(&package, flags) {
+                error!("Error searching for '{}'. Error: {}", package, e);
             }
         }
     }
