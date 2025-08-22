@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [0.3.0] - [UNRELEASED]
 
+### Added
+
+- Support for unix glob patterns in files key (toml).
+
 ### Changed
 
 - Vendored libgit2 to be compiled along with eiipm.

@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use std::fs;
 use std::process::Command;
 use colored::Colorize;
+use glob::glob;
 
 use super::{
     save_db, 
@@ -116,34 +117,48 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
 
     // Copy updated files to targets
     for file_entry in &pkg.copy_files {
-        let (source, target) = match file_entry {
-            FileEntry::Flat(f) => {
-                let src = repo_path.join(f);
-                let tgt = target_base_dir.join(
-                    src.file_name().ok_or_else(|| format!("Invalid file name '{}'", f))?
-                );
-                (src, tgt)
-            }
-            FileEntry::Detailed { src, dest } => {
-                let src_path = repo_path.join(src);
-                let tgt = match dest {
-                    Some(d) => target_base_dir.join(d),
-                    None => target_base_dir.join(src),
-                };
-                (src_path, tgt)
-            }
+        // handle *, **, etc. in file entry
+        let files: Vec<(std::path::PathBuf, std::path::PathBuf)> = match file_entry {
+            FileEntry::Flat(f) => glob(&repo_path.join(f).to_string_lossy())
+                .expect("Invalid glob")
+                .filter_map(Result::ok)
+                .map(|src| {
+                    let tgt = target_base_dir.join(
+                        src.file_name()
+                            .expect("Invalid file name"),
+                    );
+                    (src, tgt)
+                })
+                .collect(),
+
+            FileEntry::Detailed { src, dest } => glob(&repo_path.join(src).to_string_lossy())
+                .expect("Invalid glob")
+                .filter_map(Result::ok)
+                .map(|src_path| {
+                    let tgt = match dest {
+                        Some(d) => target_base_dir.join(d),
+                        None => target_base_dir.join(
+                            src_path.file_name()
+                                .expect("Invalid file name"),
+                        ),
+                    };
+                    (src_path, tgt)
+                })
+                .collect(),
         };
 
-        if !source.exists() {
-            return Err(format!("File '{}' not found in repo", source.display()).into());
-        }
+        for (source, target) in files {
+            if !source.exists() {
+                return Err(format!("File '{}' not found in repo", source.display()).into());
+            }
 
-        if let Some(parent) = target.parent() {
-            fs::create_dir_all(parent)?;
-        }
+            if let Some(parent) = target.parent() {
+                fs::create_dir_all(parent)?;
+            }
 
-        fs::copy(&source, &target)?;
-        info!("Copied {} -> {}", source.display(), target.display());
+            fs::copy(&source, &target)?;
+            info!("Copied {} -> {}", source.display(), target.display());
+        };
     }
 
     Ok(())

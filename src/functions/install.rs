@@ -8,6 +8,7 @@ use std::error::Error;
 use std::fs;
 use std::process::Command;
 use super::{FileEntry, InstalledPackage, save_db, load_db}; 
+use glob::glob;
 
 use crate::git::{
     clone_https,
@@ -91,31 +92,47 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
     // Copy files and track them
     let mut installed_files = Vec::new();
     for file_entry in &meta.files {
-        let (source, target) = match file_entry {
-            FileEntry::Flat(f) => {
-                let src = repo_path.join(f);
-                let tgt = target_base_dir.join(src.file_name().ok_or_else(|| format!("Invalid file name '{}'", f))?);
-                (src, tgt)
-            }
-            FileEntry::Detailed { src, dest } => {
-                let src_path = repo_path.join(src);
-                let tgt = match dest {
-                    Some(d) => target_base_dir.join(d),
-                    None => target_base_dir.join(src),
-                };
-                (src_path, tgt)
-            }
+        // handle *, ** etc. in file entry
+        let files: Vec<(std::path::PathBuf, std::path::PathBuf)> = match file_entry {
+            FileEntry::Flat(f) => glob(&repo_path.join(f).to_string_lossy())
+                .expect("Invalid glob")
+                .filter_map(Result::ok)
+                .map(|src| {
+                    let tgt = target_base_dir.join(
+                        src.file_name()
+                            .expect("Invalid file name"),
+                    );
+                    (src, tgt)
+                })
+                .collect(),
+
+            FileEntry::Detailed { src, dest } => glob(&repo_path.join(src).to_string_lossy())
+                .expect("Invalid glob")
+                .filter_map(Result::ok)
+                .map(|src_path| {
+                    let tgt = match dest {
+                        Some(d) => target_base_dir.join(d),
+                        None => target_base_dir.join(
+                            src_path.file_name()
+                                .expect("Invalid file name"),
+                        ),
+                    };
+                    (src_path, tgt)
+                })
+                .collect(),
         };
 
-        if !source.exists() {
-            return Err(format!("File '{}' not found", source.display()).into());
-        }
+        for (source, target) in files {
+            if !source.exists() {
+                return Err(format!("File '{}' not found", source.display()).into());
+            }
 
-        if let Some(parent) = target.parent() {
-            fs::create_dir_all(parent)?;
-        }
-        fs::copy(&source, &target)?;
-        installed_files.push(target.to_string_lossy().to_string());
+            if let Some(parent) = target.parent() {
+                fs::create_dir_all(parent)?;
+            }
+            fs::copy(&source, &target)?;
+            installed_files.push(target.to_string_lossy().to_string());
+        };
     }
 
     // Update DB
