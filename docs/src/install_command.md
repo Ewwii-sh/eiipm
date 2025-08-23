@@ -21,6 +21,6 @@ Downloads, builds (if needed), and installs the given package.
 ### Examples
 
 ```bash
-eiipm install statictranspl
+eiipm install staticscript
 eiipm i ewwii
 ```

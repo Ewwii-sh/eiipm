@@ -23,5 +23,5 @@ eiipm up [PACKAGE]
 
 ```bash
 eiipm up # update all
-eiipm up statictranspl  # update just one package
+eiipm up staticscript  # update just one package
 ```

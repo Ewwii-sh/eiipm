@@ -21,5 +21,5 @@ Removes the package and its tracked files from your system.
 ### Examples
 
 ```bash
-eiipm rm statictranspl
+eiipm rm staticscript
 ```

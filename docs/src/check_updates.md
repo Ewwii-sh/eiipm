@@ -23,5 +23,5 @@ eiipm cu [PACKAGE]
 
 ```bash
 eiipm cu # check all
-eiipm check-updates statictranspl  # check just one package
+eiipm check-updates staticscript  # check just one package
 ```

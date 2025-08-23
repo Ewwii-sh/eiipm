@@ -27,6 +27,6 @@ Shows installed packages. Can display just names, detailed info, total count, or
 eiipm l
 eiipm l --verbose
 eiipm l --total-count
-eiipm l --query statictranspl
-eiipm l -q statictranspl -v
+eiipm l --query staticscript
+eiipm l -q staticscript -v
 ```

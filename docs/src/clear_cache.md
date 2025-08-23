@@ -24,7 +24,7 @@ eiipm cc [PACKAGE]
 
 ```bash
 eiipm cc # clear all
-eiipm clear-cache statictranspl  # clear just one package cache
+eiipm clear-cache staticscript  # clear just one package cache
 
 eiipm cc --force # bypasses confirmation
 ```

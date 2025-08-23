@@ -13,15 +13,15 @@ eiipm update ewwii
 eiipm uninstall ewwii
 ```
 
-Installing [statictranspl](https://ewwii-sh.github.io/statictranspl) binary:
+Installing [staticscript](https://ewwii-sh.github.io/staticscript) binary:
 
 ```bash
-# installing statictranspl
-eiipm i statictranspl
+# installing staticscript
+eiipm i staticscript
 
 # one year later
-eiipm up statictranspl # update statictranspl to latest version
+eiipm up staticscript # update staticscript to latest version
 
 # five years later
-eiipm rm statictranspl # uninstall statictranspl
+eiipm rm staticscript # uninstall staticscript
 ```

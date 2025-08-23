@@ -9,14 +9,14 @@ The most common commands in eiipm are the `install`, `uninstall` and `update` co
 **Usage example:**
 
 ```bash
-# installs the statictranspl binary
-eiipm install statictranspl
+# installs staticscript
+eiipm install staticscript
 
-# uninstalls the statictranspl binary
-eiipm uninstall statictranspl
+# uninstalls staticscript
+eiipm uninstall staticscript
 
-# updates the statictranspl binary to the latest version
-eiipm update statictranspl
+# updates staticscript to the latest version
+eiipm update staticscript
 ```
 
 For a full list of commands and their uses, checkout [eiipm documentation](https://ewwii-sh.github.io/eiipm/).
