@@ -5,6 +5,12 @@ All notable changes to `eiipm` are documented here.
 This changelog follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format,
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] - [UNRELEASED]
+
+### Added
+
+- Added commit hash based install/update for security reasons.
+
 ## [0.3.0] - 2025-08-22
 
 ### Added

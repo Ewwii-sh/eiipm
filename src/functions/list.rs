@@ -19,7 +19,7 @@ pub fn list_packages(list_args: ListArgs) -> Result<(), Box<dyn Error>> {
                     "{}\n  Type: {}\n  Repo: {}\n  Build: {}\n  Files:\n    {}",
                     pkg,
                     package.pkg_type,
-                    package.repo_path,
+                    package.repo_fs_path,
                     package
                         .build_command
                         .clone()
@@ -42,7 +42,7 @@ pub fn list_packages(list_args: ListArgs) -> Result<(), Box<dyn Error>> {
                 "{}\n  Type: {}\n  Repo: {}\n  Build: {}\n  Files:\n    {}",
                 name,
                 package.pkg_type,
-                package.repo_path,
+                package.repo_fs_path,
                 package
                     .build_command
                     .clone()

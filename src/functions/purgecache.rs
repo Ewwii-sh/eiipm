@@ -19,7 +19,7 @@ pub fn purge_cache() -> Result<(), Box<dyn std::error::Error>> {
         .packages
         .values()
         .map(|pkg| {
-            Path::new(&pkg.repo_path)
+            Path::new(&pkg.repo_fs_path)
                 .file_name()
                 .unwrap()
                 .to_string_lossy()

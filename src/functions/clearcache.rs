@@ -28,7 +28,7 @@ pub fn clean_package_cache(package_name: Option<String>) -> Result<(), Box<dyn E
 }
 
 fn clear_file_cache(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box<dyn Error>> {
-    let repo_path = PathBuf::from(&pkg.repo_path);
+    let repo_path = PathBuf::from(&pkg.repo_fs_path);
 
     let home_dir = dirs::home_dir().ok_or("Failed to get home directory")?;
     let cache_root = home_dir.join(".eiipm/cache");

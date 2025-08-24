@@ -22,19 +22,38 @@ pub struct PackageDB {
     packages: HashMap<String, InstalledPackage>,
 }
 
+/// Metadata structs
+#[derive(Deserialize, Debug)]
+pub struct PackageRootMeta {
+    metadata: PackageMeta,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct PackageMeta {
+    name: String,
+    #[serde(rename = "type")]
+    pkg_type: String,
+    src: String,
+    #[serde(rename = "commit")]
+    commit_hash: String, // hash of the commit to install
+    files: Vec<FileEntry>,
+    build: Option<String>, // Optional build command
+}
+
 // Wait there dev!
 // if you add a new value to InstalledPackage, eiipm will break
 // no... no... eiipm wont break, but old db's that use the old
 // struct will break... So, remember to add `#[serde(default)]`.
 // #[serde(default)] is our lord and savior if we need to add a new value.
-
 #[derive(Deserialize, Serialize, Debug)]
 pub struct InstalledPackage {
-    repo_path: String, // path to cached repo. E.g. ~/.eiipm/cache/<REPO_NAME>
+    repo_fs_path: String, // path to cached repo. E.g. ~/.eiipm/cache/<REPO_NAME>
     installed_files: Vec<String>,
     copy_files: Vec<FileEntry>,
     pkg_type: String,
     upstream_src: String,
+    installed_hash: String,
+    manifest_url: String,
     build_command: Option<String>,
 }
 
@@ -78,4 +97,21 @@ pub fn http_get_string(url: &str) -> Result<String, Box<dyn Error>> {
         return Err(format!("Failed to fetch URL {}: HTTP {}", url, response.status()).into());
     }
     Ok(response.text()?)
+}
+
+pub fn is_update_needed_for(package_name: &str) -> Result<(bool, String), Box<dyn Error>> {
+    let mut db = load_db()?;
+
+    if let Some(pkg) = db.packages.get_mut(package_name) {
+        let upstream_manifest_raw = http_get_string(&pkg.manifest_url)?;
+        let root_manifest: PackageRootMeta = toml::from_str(&upstream_manifest_raw)?;
+        let upstream_manifest = root_manifest.metadata;
+
+        Ok((
+            upstream_manifest.commit_hash != pkg.installed_hash,
+            upstream_manifest.commit_hash,
+        ))
+    } else {
+        Err(format!("Package `{}` not found in DB", package_name).into())
+    }
 }

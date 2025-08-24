@@ -6,9 +6,9 @@ use std::fs;
 use std::path::PathBuf;
 use std::process::Command;
 
-use super::{FileEntry, InstalledPackage, load_db, save_db};
+use super::{FileEntry, InstalledPackage, is_update_needed_for, load_db, save_db};
 
-use crate::git::{clone_https, is_upstream_ahead, pull_but_reclone_on_fail};
+use crate::git::{init_and_fetch, update_to_latest};
 
 pub fn update_package(package_name: &Option<String>) -> Result<(), Box<dyn Error>> {
     let mut db = load_db()?;
@@ -24,10 +24,10 @@ pub fn update_package(package_name: &Option<String>) -> Result<(), Box<dyn Error
             if pkg.pkg_type == "theme" {
                 info!("Skipping theme package '{}'", name.yellow().bold());
             } else {
-                let need_update = is_upstream_ahead(&pkg.repo_path)?;
-                if need_update {
+                let need_update = is_update_needed_for(&name)?;
+                if need_update.0 {
                     info!("> Updating '{}'", name.yellow().bold());
-                    update_file(pkg, &name)?;
+                    update_file(pkg, &name, need_update.1)?;
                     info!("Successfully updated '{}'", name.yellow().bold());
                 } else {
                     info!("Package '{}' is already up-to-date", name.yellow().bold());
@@ -50,10 +50,10 @@ pub fn update_package(package_name: &Option<String>) -> Result<(), Box<dyn Error
                 continue;
             }
 
-            let need_update = is_upstream_ahead(&pkg.repo_path)?;
-            if need_update {
+            let need_update = is_update_needed_for(&name)?;
+            if need_update.0 {
                 info!("> Updating '{}'", name.yellow().bold());
-                update_file(pkg, &name)?;
+                update_file(pkg, &name, need_update.1)?;
                 info!("Successfully updated '{}'", name.yellow().bold());
             } else {
                 info!("Package '{}' is already up-to-date", name.yellow().bold());
@@ -65,24 +65,29 @@ pub fn update_package(package_name: &Option<String>) -> Result<(), Box<dyn Error
     Ok(())
 }
 
-fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box<dyn Error>> {
-    let repo_path = PathBuf::from(&pkg.repo_path);
+fn update_file(
+    pkg: &mut InstalledPackage,
+    package_name: &str,
+    commit_hash: String,
+) -> Result<(), Box<dyn Error>> {
+    let repo_fs_path = PathBuf::from(&pkg.repo_fs_path);
 
     // Clone/Pull latest changes
     debug!("Pulling latest version of {} using git...", package_name);
 
-    if !repo_path.exists() {
+    // Init and fetch or fetch and clean repo
+    if !repo_fs_path.exists() {
         info!(
-            "Cache not found. Cloning repository {} to {}",
+            "Cloning repository {} to {}",
             pkg.upstream_src.underline(),
-            repo_path.display()
+            repo_fs_path.display()
         );
-        let _repo = clone_https(&pkg.upstream_src, &repo_path, Some(1))
-            .map_err(|e| format!("Git clone failed: {}", e))?;
+        let _repo = init_and_fetch(&pkg.upstream_src, &repo_fs_path, &commit_hash, 1)
+            .map_err(|e| format!("Failed to fetch commit: {}", e))?;
     } else {
-        info!("Repository is cached, pulling latest changes");
-        pull_but_reclone_on_fail(&pkg.upstream_src, &repo_path, Some(1))
-            .map_err(|e| format!("Git pull failed: {}", e))?;
+        info!("Repository exists, fetching latest changes");
+        let _repo = update_to_latest(&repo_fs_path, &commit_hash, 1)
+            .map_err(|e| format!("Failed to fetch commit and clean state: {}", e))?;
     }
 
     // Optional build step
@@ -91,10 +96,10 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
         let status = Command::new("sh")
             .arg("-c")
             .arg(build_cmd)
-            .current_dir(&repo_path)
+            .current_dir(&repo_fs_path)
             .status()?;
         if !status.success() {
-            return Err(format!("Build failed for package '{}'", pkg.repo_path).into());
+            return Err(format!("Build failed for package '{}'", pkg.repo_fs_path).into());
         }
     }
 
@@ -118,7 +123,7 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
     for file_entry in &pkg.copy_files {
         // handle *, **, etc. in file entry
         let files: Vec<(std::path::PathBuf, std::path::PathBuf)> = match file_entry {
-            FileEntry::Flat(f) => glob(&repo_path.join(f).to_string_lossy())
+            FileEntry::Flat(f) => glob(&repo_fs_path.join(f).to_string_lossy())
                 .expect("Invalid glob")
                 .filter_map(Result::ok)
                 .map(|src| {
@@ -127,7 +132,7 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
                 })
                 .collect(),
 
-            FileEntry::Detailed { src, dest } => glob(&repo_path.join(src).to_string_lossy())
+            FileEntry::Detailed { src, dest } => glob(&repo_fs_path.join(src).to_string_lossy())
                 .expect("Invalid glob")
                 .filter_map(Result::ok)
                 .map(|src_path| {
@@ -153,6 +158,8 @@ fn update_file(pkg: &mut InstalledPackage, package_name: &str) -> Result<(), Box
             info!("Copied {} -> {}", source.display(), target.display());
         }
     }
+
+    pkg.installed_hash = commit_hash;
 
     Ok(())
 }

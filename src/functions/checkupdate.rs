@@ -1,5 +1,4 @@
-use super::load_db;
-use crate::git::is_upstream_ahead;
+use super::{is_update_needed_for, load_db};
 use colored::Colorize;
 use log::info;
 use std::error::Error;
@@ -9,11 +8,11 @@ pub fn check_package_updates(package_name: &Option<String>) -> Result<(), Box<dy
     let mut pkg_needing_update: Vec<&String> = Vec::new();
 
     if let Some(name) = package_name {
-        if let Some(pkg) = db.packages.get_mut(name) {
+        if db.packages.get_mut(name).is_some() {
             info!("> Checking for '{}' update", name.yellow().bold());
-            let need_update = is_upstream_ahead(&pkg.repo_path)?;
+            let need_update = is_update_needed_for(&name)?;
 
-            if need_update {
+            if need_update.0 {
                 pkg_needing_update.push(name);
             }
         } else {
@@ -21,11 +20,11 @@ pub fn check_package_updates(package_name: &Option<String>) -> Result<(), Box<dy
         }
     } else {
         info!("> Checking for updates in all packages...");
-        for (name, pkg) in db.packages.iter_mut() {
+        for (name, ..) in db.packages.iter_mut() {
             info!("Checking '{}'", name.yellow().bold());
-            let need_update = is_upstream_ahead(&pkg.repo_path)?;
+            let need_update = is_update_needed_for(&name)?;
 
-            if need_update {
+            if need_update.0 {
                 pkg_needing_update.push(name);
             }
         }

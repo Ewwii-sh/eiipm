@@ -1,30 +1,14 @@
-use super::{FileEntry, InstalledPackage, http_get_string, load_db, save_db};
+use super::{FileEntry, InstalledPackage, PackageRootMeta, http_get_string, load_db, save_db};
 use colored::Colorize;
 use dirs;
 use glob::glob;
 use log::{info, trace};
-use serde::Deserialize;
 use std::env;
 use std::error::Error;
 use std::fs;
 use std::process::Command;
 
-use crate::git::{clone_https, pull_but_reclone_on_fail};
-
-#[derive(Deserialize, Debug)]
-struct PackageRootMeta {
-    metadata: PackageMeta,
-}
-
-#[derive(Deserialize, Debug)]
-struct PackageMeta {
-    name: String,
-    #[serde(rename = "type")]
-    pkg_type: String,
-    src: String,
-    files: Vec<FileEntry>,
-    build: Option<String>, // Optional build command
-}
+use crate::git::{init_and_fetch, update_to_latest};
 
 pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
     info!("> Installing package '{}'", package_name.yellow().bold());
@@ -50,21 +34,21 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
         .strip_suffix(".git")
         .unwrap_or_else(|| meta.src.rsplit('/').next().unwrap());
 
-    let repo_path = eiipm_dir.join(format!("cache/{}", repo_name));
+    let repo_fs_path = eiipm_dir.join(format!("cache/{}", repo_name));
 
-    // Clone or pull repo
-    if !repo_path.exists() {
+    // Init and fetch or fetch and clean repo
+    if !repo_fs_path.exists() {
         info!(
             "Cloning repository {} to {}",
             meta.src.underline(),
-            repo_path.display()
+            repo_fs_path.display()
         );
-        let _repo = clone_https(&meta.src, &repo_path, Some(1))
-            .map_err(|e| format!("Git clone failed: {}", e))?;
+        let _repo = init_and_fetch(&meta.src, &repo_fs_path, &meta.commit_hash, 1)
+            .map_err(|e| format!("Failed to fetch commit: {}", e))?;
     } else {
-        info!("Repository exists, pulling latest changes");
-        pull_but_reclone_on_fail(&meta.src, &repo_path, Some(1))
-            .map_err(|e| format!("Git pull failed: {}", e))?;
+        info!("Repository exists, fetching latest changes");
+        let _repo = update_to_latest(&repo_fs_path, &meta.commit_hash, 1)
+            .map_err(|e| format!("Failed to fetch commit and clean state: {}", e))?;
     }
 
     // Optional build step
@@ -73,7 +57,7 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
         let status = Command::new("sh")
             .arg("-c")
             .arg(build_cmd)
-            .current_dir(&repo_path)
+            .current_dir(&repo_fs_path)
             .status()?;
         if !status.success() {
             return Err(format!("Build failed for package '{}'", package_name).into());
@@ -94,7 +78,7 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
     for file_entry in &meta.files {
         // handle *, ** etc. in file entry
         let files: Vec<(std::path::PathBuf, std::path::PathBuf)> = match file_entry {
-            FileEntry::Flat(f) => glob(&repo_path.join(f).to_string_lossy())
+            FileEntry::Flat(f) => glob(&repo_fs_path.join(f).to_string_lossy())
                 .expect("Invalid glob")
                 .filter_map(Result::ok)
                 .map(|src| {
@@ -103,7 +87,7 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
                 })
                 .collect(),
 
-            FileEntry::Detailed { src, dest } => glob(&repo_path.join(src).to_string_lossy())
+            FileEntry::Detailed { src, dest } => glob(&repo_fs_path.join(src).to_string_lossy())
                 .expect("Invalid glob")
                 .filter_map(Result::ok)
                 .map(|src_path| {
@@ -134,11 +118,13 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
     db.packages.insert(
         meta.name.clone(),
         InstalledPackage {
-            repo_path: repo_path.to_string_lossy().to_string(),
+            repo_fs_path: repo_fs_path.to_string_lossy().to_string(),
             installed_files: installed_files,
             copy_files: meta.files.clone(),
             pkg_type: meta.pkg_type.clone(),
             upstream_src: meta.src.clone(),
+            installed_hash: meta.commit_hash.clone(),
+            manifest_url: raw_manifest_url,
             build_command: meta.build.clone(),
         },
     );
