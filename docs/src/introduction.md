@@ -49,9 +49,3 @@ I use zsh, so I added the line `export PATH="$HOME/.eiipm/bin:$PATH"` in `~/.zsh
 For example, if you use bash, add that line in `~/.bashrc`.
 
 > **NOTE:** If you dont want to use echo to add it, then you can manually edit your configuration file and add the line `export PATH="$HOME/.eiipm/bin:$PATH"` in there.
-
-## Security Notice
-
-<div class="warning">
-    Third-party packages may contain vulnerabilities. Always verify that you trust the author, even if the package is officially approved and included in <a href="https://github.com/Ewwii-sh/eii-manifests">eii-manifests</a>.
-</div>
