@@ -292,6 +292,10 @@
   color: #c1c3c8;
   background: #23262f;
 }
+.ewwii pre {
+  border-top: 2px solid #7c7f93;
+  padding-top: 0.2em;
+}
 .ewwii blockquote blockquote {
   border-top: 0.1em solid #23262f;
   border-bottom: 0.1em solid #23262f;
