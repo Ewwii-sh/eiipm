@@ -52,4 +52,6 @@ For example, if you use bash, add that line in `~/.bashrc`.
 
 ## Security Notice
 
-Third-party packages may contain vulnerabilities. Always verify that you trust the author, even if the package is officially approved and included in [eii-manifests](https://github.com/Ewwii-sh/eii-manifests).
+<div class="warning">
+    Third-party packages may contain vulnerabilities. Always verify that you trust the author, even if the package is officially approved and included in <a href="https://github.com/Ewwii-sh/eii-manifests">eii-manifests</a>.
+</div>
