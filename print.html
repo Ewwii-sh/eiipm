@@ -1,65 +1,66 @@
 <!DOCTYPE HTML>
-<html lang="en" class="sidebar-visible no-js navy">
+<html lang="en" class="latte sidebar-visible" dir="ltr">
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
         <title>eiipm documentation</title>
-        
-        <meta name="robots" content="noindex" />
-        
-        
+        <meta name="robots" content="noindex">
 
 
         <!-- Custom HTML head -->
-        
 
-
-        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="theme-color" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff">
 
-        
         <link rel="icon" href="favicon.svg">
-        
-        
         <link rel="shortcut icon" href="favicon.png">
-        
         <link rel="stylesheet" href="css/variables.css">
         <link rel="stylesheet" href="css/general.css">
         <link rel="stylesheet" href="css/chrome.css">
-        
         <link rel="stylesheet" href="css/print.css" media="print">
-        
 
         <!-- Fonts -->
         <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
-        
         <link rel="stylesheet" href="fonts/fonts.css">
-        
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" href="highlight.css">
-        <link rel="stylesheet" href="tomorrow-night.css">
-        <link rel="stylesheet" href="ayu-highlight.css">
+        <link rel="stylesheet" id="highlight-css" href="highlight.css">
+        <link rel="stylesheet" id="tomorrow-night-css" href="tomorrow-night.css">
+        <link rel="stylesheet" id="ayu-highlight-css" href="ayu-highlight.css">
 
         <!-- Custom theme stylesheets -->
-        
+        <link rel="stylesheet" href="./theme/catppuccin.css">
 
-        
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "latte";
+            const default_dark_theme = "macchiato";
+            window.path_to_searchindex_js = "searchindex.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc.js"></script>
     </head>
     <body>
-        <!-- Provide site root to javascript -->
-        <script type="text/javascript">
-            var path_to_root = "";
-            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "navy";
-        </script>
-
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 id="keyboard-shortcuts" class="mdbook-help-title"><a class="header" href="#keyboard-shortcuts">Keyboard shortcuts</a></h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="body-container">
         <!-- Work around some values being stored in localStorage wrapped in quotes -->
-        <script type="text/javascript">
+        <script>
             try {
-                var theme = localStorage.getItem('mdbook-theme');
-                var sidebar = localStorage.getItem('mdbook-sidebar');
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
 
                 if (theme.startsWith('"') && theme.endsWith('"')) {
                     localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
@@ -72,85 +73,93 @@
         </script>
 
         <!-- Set the theme before any content is loaded, prevents flash -->
-        <script type="text/javascript">
-            var theme;
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
             try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
             if (theme === null || theme === undefined) { theme = default_theme; }
-            var html = document.querySelector('html');
-            html.classList.remove('no-js')
-            html.classList.remove('navy')
+            const html = document.documentElement;
+            html.classList.remove('latte')
             html.classList.add(theme);
-            html.classList.add('js');
+            html.classList.add("js");
         </script>
 
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
         <!-- Hide / unhide sidebar before it is displayed -->
-        <script type="text/javascript">
-            var html = document.querySelector('html');
-            var sidebar = 'hidden';
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
             if (document.body.clientWidth >= 1080) {
                 try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
                 sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
             }
-            html.classList.remove('sidebar-visible');
-            html.classList.add("sidebar-" + sidebar);
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
         </script>
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
-            <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded "><a href="introduction.html"><strong aria-hidden="true">1.</strong> Introduction</a></li><li class="chapter-item expanded "><a href="commands.html"><strong aria-hidden="true">2.</strong> Commands</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="install_command.html"><strong aria-hidden="true">2.1.</strong> Install</a></li><li class="chapter-item expanded "><a href="uninstall_command.html"><strong aria-hidden="true">2.2.</strong> Uninstall</a></li><li class="chapter-item expanded "><a href="update_command.html"><strong aria-hidden="true">2.3.</strong> Update</a></li><li class="chapter-item expanded "><a href="check_updates.html"><strong aria-hidden="true">2.4.</strong> Check Updates</a></li><li class="chapter-item expanded "><a href="list_command.html"><strong aria-hidden="true">2.5.</strong> List</a></li><li class="chapter-item expanded "><a href="clear_cache.html"><strong aria-hidden="true">2.6.</strong> Clear Cache</a></li></ol></li><li class="chapter-item expanded "><a href="tips_n_tricks.html"><strong aria-hidden="true">3.</strong> Tips &amp; Tricks</a></li><li class="chapter-item expanded "><a href="publishing_your_package.html"><strong aria-hidden="true">4.</strong> Publishing your package</a></li><li class="chapter-item expanded "><a href="examples.html"><strong aria-hidden="true">5.</strong> Examples</a></li></ol>
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
             </div>
-            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
         <div id="page-wrapper" class="page-wrapper">
 
             <div class="page">
-                
                 <div id="menu-bar-hover-placeholder"></div>
-                <div id="menu-bar" class="menu-bar sticky bordered">
+                <div id="menu-bar" class="menu-bar sticky">
                     <div class="left-buttons">
-                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
                             <i class="fa fa-bars"></i>
-                        </button>
+                        </label>
                         <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
                             <i class="fa fa-paint-brush"></i>
                         </button>
                         <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
-                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy (default)</button></li>
-                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="latte">Latte</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="frappe">Frappé</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="macchiato">Macchiato</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mocha">Mocha</button></li>
                         </ul>
-                        
-                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                        <button id="search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="searchbar">
                             <i class="fa fa-search"></i>
                         </button>
-                        
                     </div>
 
                     <h1 class="menu-title">eiipm documentation</h1>
 
                     <div class="right-buttons">
-                        
                         <a href="print.html" title="Print this book" aria-label="Print this book">
                             <i id="print-button" class="fa fa-print"></i>
                         </a>
-                        
-                        
                         <a href="https://github.com/Ewwii-sh/eiipm/" title="Git repository" aria-label="Git repository">
                             <i id="git-repository-button" class="fa fa-github"></i>
                         </a>
-                        
-                        
 
                     </div>
                 </div>
 
-                
                 <div id="search-wrapper" class="hidden">
                     <form id="searchbar-outer" class="searchbar-outer">
-                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                        <div class="search-wrapper">
+                            <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </div>
+                        </div>
                     </form>
                     <div id="searchresults-outer" class="searchresults-outer hidden">
                         <div id="searchresults-header" class="searchresults-header"></div>
@@ -158,10 +167,9 @@
                         </ul>
                     </div>
                 </div>
-                
 
                 <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
-                <script type="text/javascript">
+                <script>
                     document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
                     document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
                     Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
@@ -189,25 +197,27 @@ cargo build --release
 </code></pre>
 <h2 id="adding-eiipm-to-path"><a class="header" href="#adding-eiipm-to-path">Adding eiipm to path</a></h2>
 <p><strong>This is a very important step</strong> which people are likely to miss. By default, eiipm installs binaries to <code>~/.eiipm/bin</code> directory. But your shell doesn't know about it yet.</p>
-<p>So, when you run something like <code>bin-you-installed</code> after installing a binary from eiipm, your shell will go like &quot;Oh, let me check in all the known areas. Nope, <code>bin-you-installed</code> is not installed...&quot;</p>
-<p>So, you should add <code>export PATH=&quot;$HOME/.eiipm/bin:$PATH&quot;</code> to your shell's configuration file.</p>
+<p>So, when you run something like <code>bin-you-installed</code> after installing a binary from eiipm, your shell will go like "Oh, let me check in all the known areas. Nope, <code>bin-you-installed</code> is not installed..."</p>
+<p>So, you should add <code>export PATH="$HOME/.eiipm/bin:$PATH"</code> to your shell's configuration file.</p>
 <p><strong>Here is an example on how to do it:</strong></p>
 <pre><code class="language-bash"># Replace ~/.zshrc with your shell's configuration file.
 # For example, if you use bash, then it would be ~/.bashrc
-echo 'export PATH=&quot;$HOME/.eiipm/bin:$PATH&quot;' &gt;&gt; ~/.zshrc
+echo 'export PATH="$HOME/.eiipm/bin:$PATH"' &gt;&gt; ~/.zshrc
 </code></pre>
-<p>I use zsh, so I added the line <code>export PATH=&quot;$HOME/.eiipm/bin:$PATH&quot;</code> in <code>~/.zshrc</code> but if you use something else, you should replace the <code>~/.zshrc</code> with your own shell's confiuration file.</p>
+<p>I use zsh, so I added the line <code>export PATH="$HOME/.eiipm/bin:$PATH"</code> in <code>~/.zshrc</code> but if you use something else, you should replace the <code>~/.zshrc</code> with your own shell's confiuration file.</p>
 <p>For example, if you use bash, add that line in <code>~/.bashrc</code>.</p>
 <blockquote>
-<p><strong>NOTE:</strong> If you dont want to use echo to add it, then you can manually edit your configuration file and add the line <code>export PATH=&quot;$HOME/.eiipm/bin:$PATH&quot;</code> in there.</p>
+<p><strong>NOTE:</strong> If you dont want to use echo to add it, then you can manually edit your configuration file and add the line <code>export PATH="$HOME/.eiipm/bin:$PATH"</code> in there.</p>
 </blockquote>
 <h2 id="security-notice"><a class="header" href="#security-notice">Security Notice</a></h2>
-<p>Third-party packages may contain vulnerabilities. Always verify that you trust the author, even if the package is officially approved and included in <a href="https://github.com/Ewwii-sh/eii-manifests">eii-manifests</a>.</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="commands"><a class="header" href="#commands">Commands</a></h1>
+<div class="warning">
+    Third-party packages may contain vulnerabilities. Always verify that you trust the author, even if the package is officially approved and included in <a href="https://github.com/Ewwii-sh/eii-manifests">eii-manifests</a>.
+</div>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="commands"><a class="header" href="#commands">Commands</a></h1>
 <p>Eiipm offers many commands which users can use to manage ewwii and its packages.</p>
 <h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
 <p>Here is a simple overview before we get started.</p>
-<table><thead><tr><th>Command</th><th>Aliases</th><th>Flags / Options</th></tr></thead><tbody>
+<div class="table-wrapper"><table><thead><tr><th>Command</th><th>Aliases</th><th>Flags / Options</th></tr></thead><tbody>
 <tr><td><code>install &lt;PACKAGE&gt;</code></td><td><code>i</code></td><td><code>--debug</code></td></tr>
 <tr><td><code>uninstall &lt;PACKAGE&gt;</code></td><td><code>rm</code></td><td><code>--debug</code></td></tr>
 <tr><td><code>update [PACKAGE]</code></td><td><code>up</code></td><td><code>--debug</code></td></tr>
@@ -215,6 +225,7 @@ echo 'export PATH=&quot;$HOME/.eiipm/bin:$PATH&quot;' &gt;&gt; ~/.zshrc
 <tr><td><code>help</code></td><td>None</td><td>None</td></tr>
 <tr><td><code>-V, --version</code></td><td>None</td><td>None</td></tr>
 </tbody></table>
+</div>
 <p><strong>Flags for <code>list</code>:</strong></p>
 <ul>
 <li><code>-v, --verbose</code>: verbose output</li>
@@ -222,7 +233,7 @@ echo 'export PATH=&quot;$HOME/.eiipm/bin:$PATH&quot;' &gt;&gt; ~/.zshrc
 <li><code>-q, --query &lt;NAME&gt;</code>: query a package (works with <code>--verbose</code>)</li>
 <li><code>--debug</code>: debug logs</li>
 </ul>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="install"><a class="header" href="#install">Install</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="install"><a class="header" href="#install">Install</a></h1>
 <h3 id="command"><a class="header" href="#command">Command</a></h3>
 <p>Install a package</p>
 <pre><code class="language-bash">eiipm install &lt;PACKAGE&gt;
@@ -237,7 +248,7 @@ eiipm i &lt;PACKAGE&gt;
 <pre><code class="language-bash">eiipm install staticscript
 eiipm i ewwii
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="uninstall"><a class="header" href="#uninstall">Uninstall</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="uninstall"><a class="header" href="#uninstall">Uninstall</a></h1>
 <h3 id="command-1"><a class="header" href="#command-1">Command</a></h3>
 <p>Uninstall a package</p>
 <pre><code class="language-bash">eiipm uninstall &lt;PACKAGE&gt;
@@ -251,7 +262,7 @@ eiipm rm &lt;PACKAGE&gt;
 <h3 id="examples-1"><a class="header" href="#examples-1">Examples</a></h3>
 <pre><code class="language-bash">eiipm rm staticscript
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="update"><a class="header" href="#update">Update</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="update"><a class="header" href="#update">Update</a></h1>
 <h3 id="command-2"><a class="header" href="#command-2">Command</a></h3>
 <p>Update a package or all packages</p>
 <pre><code class="language-bash">eiipm update [PACKAGE]
@@ -269,7 +280,7 @@ eiipm up [PACKAGE]
 <pre><code class="language-bash">eiipm up # update all
 eiipm up staticscript  # update just one package
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="check-updates"><a class="header" href="#check-updates">Check Updates</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="check-updates"><a class="header" href="#check-updates">Check Updates</a></h1>
 <h3 id="command-3"><a class="header" href="#command-3">Command</a></h3>
 <p>Check for updates in a package or all packages</p>
 <pre><code class="language-bash">eiipm check-update [PACKAGE]
@@ -287,7 +298,7 @@ eiipm cu [PACKAGE]
 <pre><code class="language-bash">eiipm cu # check all
 eiipm check-updates staticscript  # check just one package
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="list"><a class="header" href="#list">List</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="list"><a class="header" href="#list">List</a></h1>
 <h3 id="command-4"><a class="header" href="#command-4">Command</a></h3>
 <p>List installed packages</p>
 <pre><code class="language-bash">eiipm list [OPTIONS]
@@ -310,7 +321,7 @@ eiipm l --total-count
 eiipm l --query staticscript
 eiipm l -q staticscript -v
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="clear-cache"><a class="header" href="#clear-cache">Clear Cache</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="clear-cache"><a class="header" href="#clear-cache">Clear Cache</a></h1>
 <h3 id="command-5"><a class="header" href="#command-5">Command</a></h3>
 <p>Clear package cache with confirmation.</p>
 <pre><code class="language-bash">eiipm clear-cache [PACKAGE]
@@ -331,20 +342,20 @@ eiipm clear-cache staticscript  # clear just one package cache
 
 eiipm cc --force # bypasses confirmation
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="tips--tricks"><a class="header" href="#tips--tricks">Tips &amp; Tricks</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="tips--tricks"><a class="header" href="#tips--tricks">Tips &amp; Tricks</a></h1>
 <p>Here are some tips and tricks which you can use to make your experience with eiipm better.</p>
 <h2 id="confirm-all-confirmation-requests"><a class="header" href="#confirm-all-confirmation-requests">Confirm all confirmation requests</a></h2>
 <p>As you may know, eiipm sometimes require user confirmation to perform certain tasks. One of the examples where eiipm asks for confirmation is in the update task when it cant resolve merge.</p>
-<p>You can <a href="https://www.baeldung.com/linux/pipe-output-to-function#introduction">pipe</a> the <code>yes</code> command to answer &quot;y&quot; to all eiipm commands.</p>
+<p>You can <a href="https://www.baeldung.com/linux/pipe-output-to-function#introduction">pipe</a> the <code>yes</code> command to answer "y" to all eiipm commands.</p>
 <p><strong>Example:</strong></p>
 <pre><code class="language-bash">yes | eiipm update
 </code></pre>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="publishing-your-package"><a class="header" href="#publishing-your-package">Publishing Your Package</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="publishing-your-package"><a class="header" href="#publishing-your-package">Publishing Your Package</a></h1>
 <p>Created a package for Ewwii and want it to be easily installable via <strong>eiipm</strong>? That’s fantastic! By publishing your package to <strong>eii-manifests</strong>, you make it instantly accessible to the entire Ewwii community, letting users install it with a single command.</p>
 <p>Eiipm pulls all package metadata directly from <strong>eii-manifests</strong>, so the first step is to register your package there. This ensures that your package is correctly tracked, built, and installed for everyone. Once registered, users can seamlessly download, build (if necessary), and use your package without worrying about paths, dependencies, or manual setup.</p>
 <p>Check out the <a href="https://github.com/Ewwii-sh/eii-manifests?tab=readme-ov-file#adding-your-package-to-manifests">Adding Your Package to Manifests guide</a> for a detailed, step-by-step walkthrough. Following the guide will help you structure your package correctly, define its metadata, and make sure it installs smoothly for all users.</p>
 <p>Publishing isn’t just about sharing code. It’s about contributing to a growing ecosystem. So take the leap, add your package, and become a part of the Ewwii community!</p>
-<div id="chapter_begin" style="break-before: page; page-break-before: always;"></div><h1 id="examples-6"><a class="header" href="#examples-6">Examples</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="examples-6"><a class="header" href="#examples-6">Examples</a></h1>
 <p>Installing <a href="https://ewwii-sh.github.io/">ewwii</a> binary directly:</p>
 <pre><code class="language-bash"># installing
 eiipm install ewwii
@@ -370,9 +381,7 @@ eiipm rm staticscript # uninstall staticscript
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                        
 
-                        
 
                         <div style="clear: both"></div>
                     </nav>
@@ -380,51 +389,37 @@ eiipm rm staticscript # uninstall staticscript
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                
 
-                
             </nav>
 
         </div>
 
-        
 
-        
 
-        
 
-        
-        <script type="text/javascript">
+        <script>
             window.playground_copyable = true;
         </script>
-        
 
-        
 
-        
-        <script src="elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="mark.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="searcher.js" type="text/javascript" charset="utf-8"></script>
-        
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
 
-        <script src="clipboard.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="highlight.js" type="text/javascript" charset="utf-8"></script>
-        <script src="book.js" type="text/javascript" charset="utf-8"></script>
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
 
         <!-- Custom JS scripts -->
-        
-        <script type="text/javascript" src="js/home_button.js"></script>
-        
+        <script src="js/home_button.js"></script>
 
-        
-        
-        <script type="text/javascript">
+        <script>
         window.addEventListener('load', function() {
             window.setTimeout(window.print, 100);
         });
         </script>
-        
-        
 
+
+    </div>
     </body>
 </html>
