@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 - Added commit hash based install/update for security reasons.
+- `install.sh` file for easy install in Linux.
 
 ## [0.3.0] - 2025-08-22
 
