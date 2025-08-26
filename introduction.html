@@ -189,13 +189,25 @@
 <p>Eiipm is a fast and eligant package manager made in rust for <a href="https://github.com/Ewwii-sh/ewwii">Ewwii</a>. Eiipm uses the package metadata from the <a href="https://github.com/Ewwii-sh/eii-manifests">Ewwii-sh/eii-manifests</a> repository where the manifests of packages are stored.</p>
 <h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
 <p>You can install <strong>eiipm</strong> using the same <a href="https://ewwii-sh.github.io/ewwii/installation.html">methods we discussed</a> of in Ewwii:</p>
-<h4 id="1-from-source"><a class="header" href="#1-from-source">1. From source</a></h4>
+<h4 id="1-from-installer-fastest"><a class="header" href="#1-from-installer-fastest">1. From installer (fastest)</a></h4>
+<pre><code class="language-bash">curl -sSL https://raw.githubusercontent.com/Ewwii-sh/eiipm/main/install.sh -o install.sh
+less install.sh # inspect installer code (optional)
+sh install.sh # run the installer
+</code></pre>
+<p>After, after the installation, verify it works:</p>
+<pre><code class="language-bash">eiipm --version
+</code></pre>
+<blockquote>
+<p>The installer installs the binary to <code>/usr/local/bin</code></p>
+<p>If eiipm doesn't work after the installation, make sure that <code>/usr/local/bin</code> is in path.</p>
+</blockquote>
+<h4 id="2-from-source"><a class="header" href="#2-from-source">2. From source</a></h4>
 <pre><code class="language-bash">git clone https://github.com/Ewwii-sh/eiipm
 cd eiipm
 cargo build --release
 </code></pre>
 <p>This will generate the <code>eiipm</code> binary in <code>target/release</code>.</p>
-<h4 id="2-using-cargo"><a class="header" href="#2-using-cargo">2. Using Cargo</a></h4>
+<h4 id="3-using-cargo"><a class="header" href="#3-using-cargo">3. Using Cargo</a></h4>
 <pre><code class="language-bash">cargo install --git https://github.com/Ewwii-sh/eiipm
 </code></pre>
 <p>After installation, verify it works:</p>
