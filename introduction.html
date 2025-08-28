@@ -189,7 +189,7 @@
 <p>Eiipm is a fast and eligant package manager made in rust for <a href="https://github.com/Ewwii-sh/ewwii">Ewwii</a>. Eiipm uses the package metadata from the <a href="https://github.com/Ewwii-sh/eii-manifests">Ewwii-sh/eii-manifests</a> repository where the manifests of packages are stored.</p>
 <h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
 <p>You can install <strong>eiipm</strong> using the same <a href="https://ewwii-sh.github.io/ewwii/installation.html">methods we discussed</a> of in Ewwii:</p>
-<h4 id="1-from-installer-fastest"><a class="header" href="#1-from-installer-fastest">1. From installer (fastest)</a></h4>
+<h4 id="1-from-installer-linux-only"><a class="header" href="#1-from-installer-linux-only">1. From installer (Linux Only)</a></h4>
 <pre><code class="language-bash">curl -sSL https://raw.githubusercontent.com/Ewwii-sh/eiipm/main/install.sh -o install.sh
 less install.sh # inspect installer code (optional)
 sh install.sh # run the installer
@@ -201,13 +201,20 @@ sh install.sh # run the installer
 <p>The installer installs the binary to <code>/usr/local/bin</code></p>
 <p>If eiipm doesn't work after the installation, make sure that <code>/usr/local/bin</code> is in path.</p>
 </blockquote>
-<h4 id="2-from-source"><a class="header" href="#2-from-source">2. From source</a></h4>
+<h4 id="2-from-github-releases-linux-only"><a class="header" href="#2-from-github-releases-linux-only">2. From GitHub releases (Linux Only)</a></h4>
+<p>If you are on Linux, then you can install the pre-built binary from <a href="https://github.com/Ewwii-sh/eiipm/releases/latest">eiipm GitHub releases</a>.</p>
+<ul>
+<li>Go to the latest GitHub release. <a href="https://github.com/Ewwii-sh/eiipm/releases/latest">Click Me!</a></li>
+<li>Install the binary (that is named <code>eiipm</code>) from assets section.</li>
+<li>Voila! You now have eiipm installed!</li>
+</ul>
+<h4 id="3-from-source"><a class="header" href="#3-from-source">3. From source</a></h4>
 <pre><code class="language-bash">git clone https://github.com/Ewwii-sh/eiipm
 cd eiipm
 cargo build --release
 </code></pre>
 <p>This will generate the <code>eiipm</code> binary in <code>target/release</code>.</p>
-<h4 id="3-using-cargo"><a class="header" href="#3-using-cargo">3. Using Cargo</a></h4>
+<h4 id="4-using-cargo"><a class="header" href="#4-using-cargo">4. Using Cargo</a></h4>
 <pre><code class="language-bash">cargo install --git https://github.com/Ewwii-sh/eiipm
 </code></pre>
 <p>After installation, verify it works:</p>
