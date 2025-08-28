@@ -6,7 +6,7 @@ Eiipm is a fast and eligant package manager made in rust for [Ewwii](https://git
 
 You can install **eiipm** using the same [methods we discussed](https://ewwii-sh.github.io/ewwii/installation.html) of in Ewwii:
 
-#### 1. From installer (fastest)
+#### 1. From installer (Linux Only)
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/Ewwii-sh/eiipm/main/install.sh -o install.sh
@@ -24,7 +24,15 @@ eiipm --version
 >
 > If eiipm doesn't work after the installation, make sure that `/usr/local/bin` is in path.
 
-#### 2. From source
+#### 2. From GitHub releases (Linux Only)
+
+If you are on Linux, then you can install the pre-built binary from [eiipm GitHub releases](https://github.com/Ewwii-sh/eiipm/releases/latest).
+
+- Go to the latest GitHub release. [Click Me!](https://github.com/Ewwii-sh/eiipm/releases/latest)
+- Install the binary (that is named `eiipm`) from assets section.
+- Voila! You now have eiipm installed!
+
+#### 3. From source
 
 ```bash
 git clone https://github.com/Ewwii-sh/eiipm
@@ -34,7 +42,7 @@ cargo build --release
 
 This will generate the `eiipm` binary in `target/release`.
 
-#### 3. Using Cargo
+#### 4. Using Cargo
 
 ```bash
 cargo install --git https://github.com/Ewwii-sh/eiipm

@@ -21,6 +21,8 @@ pub fn update_package(package_name: &Option<String>) -> Result<(), Box<dyn Error
                 pkg.pkg_type
             );
 
+            // there is no way that it can be a theme
+            // but... what if?
             if pkg.pkg_type == "theme" {
                 info!("Skipping theme package '{}'", name.yellow().bold());
             } else {

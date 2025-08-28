@@ -113,22 +113,24 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
         }
     }
 
-    // Update DB
-    let mut db = load_db()?;
-    db.packages.insert(
-        meta.name.clone(),
-        InstalledPackage {
-            repo_fs_path: repo_fs_path.to_string_lossy().to_string(),
-            installed_files: installed_files,
-            copy_files: meta.files.clone(),
-            pkg_type: meta.pkg_type.clone(),
-            upstream_src: meta.src.clone(),
-            installed_hash: meta.commit_hash.clone(),
-            manifest_url: raw_manifest_url,
-            build_command: meta.build.clone(),
-        },
-    );
-    save_db(&db)?;
+    // Update DB if its not a theme
+    if !(meta.pkg_type == "theme") {
+        let mut db = load_db()?;
+        db.packages.insert(
+            meta.name.clone(),
+            InstalledPackage {
+                repo_fs_path: repo_fs_path.to_string_lossy().to_string(),
+                installed_files: installed_files,
+                copy_files: meta.files.clone(),
+                pkg_type: meta.pkg_type.clone(),
+                upstream_src: meta.src.clone(),
+                installed_hash: meta.commit_hash.clone(),
+                manifest_url: raw_manifest_url,
+                build_command: meta.build.clone(),
+            },
+        );
+        save_db(&db)?;
+    }
 
     info!(
         "Installation complete for '{}'",
