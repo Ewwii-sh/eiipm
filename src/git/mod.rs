@@ -19,6 +19,7 @@ pub fn init_and_fetch(
 ) -> Result<Repository, Error> {
     // initialize new git repository
     let repo = Repository::init(path)?;
+    set_temporary_identity(&repo)?;
 
     repo.remote("origin", repo_url)?;
 
@@ -50,6 +51,7 @@ pub fn init_and_fetch(
 /// and discard all previous history (like a shallow reset).
 pub fn update_to_latest(repo_path: &Path, commit: &str, fetch_depth: i32) -> Result<(), Error> {
     let repo = Repository::open(repo_path)?;
+    set_temporary_identity(&repo)?;
 
     // Prepare fetch options (shallow)
     let callbacks = RemoteCallbacks::new();
@@ -77,5 +79,13 @@ pub fn update_to_latest(repo_path: &Path, commit: &str, fetch_depth: i32) -> Res
 
     let _ = repo.cleanup_state();
 
+    Ok(())
+}
+
+/// Set a temporary identity in the repository configuration.
+fn set_temporary_identity(repo: &git2::Repository) -> Result<(), Error> {
+    let mut config = repo.config()?;
+    config.set_str("user.name", "eiipm-anon")?;
+    config.set_str("user.email", "eiipm-anon@example.com")?;
     Ok(())
 }

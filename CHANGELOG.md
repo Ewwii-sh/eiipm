@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ### Fxied
 
 - Themes being saved in eiipm installed package database.
+- Detailed fs path not being preserved.
 
 ## [0.3.0] - 2025-08-22
 

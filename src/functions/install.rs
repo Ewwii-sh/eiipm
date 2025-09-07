@@ -91,10 +91,17 @@ pub fn install_package(package_name: &str) -> Result<(), Box<dyn Error>> {
                 .expect("Invalid glob")
                 .filter_map(Result::ok)
                 .map(|src_path| {
+                    let relative_path = src_path
+                        .strip_prefix(&repo_fs_path)
+                        .expect("Failed to get relative path");
                     let tgt = match dest {
-                        Some(d) => target_base_dir.join(d),
-                        None => target_base_dir.join(src),
+                        Some(d) => {
+                            let sanitized = d.trim_end_matches('*').trim_end_matches('/');
+                            target_base_dir.join(sanitized).join(relative_path)
+                        }
+                        None => target_base_dir.join(relative_path),
                     };
+
                     (src_path, tgt)
                 })
                 .collect(),
