@@ -9,9 +9,8 @@ You can install **eiipm** using the same [methods we discussed](https://ewwii-sh
 #### 1. From installer (Linux Only)
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Ewwii-sh/eiipm/main/install.sh -o install.sh
-less install.sh # inspect installer code (optional)
-sh install.sh # run the installer
+curl -sSL https://ewwii-sh.github.io/install.sh | install.sh
+# In the install script, make sure that you install eiipm
 ```
 
 After, after the installation, verify it works:
