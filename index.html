@@ -188,37 +188,7 @@
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
 <p>Eiipm is a fast and eligant package manager made in rust for <a href="https://github.com/Ewwii-sh/ewwii">Ewwii</a>. Eiipm uses the package metadata from the <a href="https://github.com/Ewwii-sh/eii-manifests">Ewwii-sh/eii-manifests</a> repository where the manifests of packages are stored.</p>
 <h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
-<p>You can install <strong>eiipm</strong> using the same <a href="https://ewwii-sh.github.io/ewwii/installation.html">methods we discussed</a> of in Ewwii:</p>
-<h4 id="1-from-installer-linux-only"><a class="header" href="#1-from-installer-linux-only">1. From installer (Linux Only)</a></h4>
-<pre><code class="language-bash">curl -sSL https://ewwii-sh.github.io/install.sh | install.sh
-# In the install script, make sure that you install eiipm
-</code></pre>
-<p>After, after the installation, verify it works:</p>
-<pre><code class="language-bash">eiipm --version
-</code></pre>
-<blockquote>
-<p>The installer installs the binary to <code>/usr/local/bin</code></p>
-<p>If eiipm doesn't work after the installation, make sure that <code>/usr/local/bin</code> is in path.</p>
-</blockquote>
-<h4 id="2-from-github-releases-linux-only"><a class="header" href="#2-from-github-releases-linux-only">2. From GitHub releases (Linux Only)</a></h4>
-<p>If you are on Linux, then you can install the pre-built binary from <a href="https://github.com/Ewwii-sh/eiipm/releases/latest">eiipm GitHub releases</a>.</p>
-<ul>
-<li>Go to the latest GitHub release. <a href="https://github.com/Ewwii-sh/eiipm/releases/latest">Click Me!</a></li>
-<li>Install the binary (that is named <code>eiipm</code>) from assets section.</li>
-<li>Voila! You now have eiipm installed!</li>
-</ul>
-<h4 id="3-from-source"><a class="header" href="#3-from-source">3. From source</a></h4>
-<pre><code class="language-bash">git clone https://github.com/Ewwii-sh/eiipm
-cd eiipm
-cargo build --release
-</code></pre>
-<p>This will generate the <code>eiipm</code> binary in <code>target/release</code>.</p>
-<h4 id="4-using-cargo"><a class="header" href="#4-using-cargo">4. Using Cargo</a></h4>
-<pre><code class="language-bash">cargo install --git https://github.com/Ewwii-sh/eiipm
-</code></pre>
-<p>After installation, verify it works:</p>
-<pre><code class="language-bash">eiipm --version
-</code></pre>
+<p>Checkout <a href="/articles/en/getting_started">Getting Started Article</a> for a guide on installing eiipm and ewwii.</p>
 <h2 id="adding-eiipm-to-path"><a class="header" href="#adding-eiipm-to-path">Adding eiipm to path</a></h2>
 <p><strong>This is a very important step</strong> which people are likely to miss. By default, eiipm installs binaries to <code>~/.eiipm/bin</code> directory. But your shell doesn't know about it yet.</p>
 <p>So, when you run something like <code>bin-you-installed</code> after installing a binary from eiipm, your shell will go like "Oh, let me check in all the known areas. Nope, <code>bin-you-installed</code> is not installed..."</p>
