@@ -5,6 +5,19 @@ All notable changes to `eiipm` are documented here.
 This changelog follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format,
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.0.0] - 2026-05-30
+
+### Added
+
+- New architecture.
+- Plugin exclusive features.
+
+### Removed
+
+- Old architecture.
+- Eii manifests.
+- Library and theme support.
+
 ## [0.4.0] - 2025-09-07
 
 ### Added

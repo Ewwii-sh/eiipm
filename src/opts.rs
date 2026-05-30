@@ -1,10 +1,9 @@
-use clap::{Args, Parser, Subcommand};
+use clap::{Parser, Subcommand};
 
-/// Eiipm package manager for ewwii.
+/// Simple plugin manager for Ewwii.
 #[derive(Parser, Debug)]
-#[command(author, version, about)]
-#[command(arg_required_else_help = true)]
-pub struct PMArgs {
+#[command(version, about, long_about = None)]
+pub struct Args {
     /// Show debug logs
     #[arg(long, global = true)]
     pub debug: bool,
@@ -15,92 +14,51 @@ pub struct PMArgs {
 
 #[derive(Subcommand, Debug)]
 pub enum Commands {
-    /// Install a package
-    #[command(alias = "i")]
-    Install {
-        /// Name of the package to install
-        package: String,
+    /// Initialize plugins.toml
+    Init,
+
+    /// Install everything in plugins.toml
+    Install,
+
+    /// Add a plugin to plugins.toml
+    Add(AddArgs),
+
+    /// Remove a plugin from plugins.toml and plugins/
+    Remove {
+        /// Plugin to remove
+        plugin: String,
     },
 
-    /// Uninstall a package
-    #[command(alias = "rm")]
-    Uninstall {
-        /// Name of the package to uninstall
-        package: String,
-    },
-
-    /// Update a package or all packages
-    #[command(alias = "up")]
+    /// Update all plugins
     Update {
-        /// Name of the package to update. Updates all if not provided
-        package: Option<String>,
+        /// Only update a singular plugin
+        plugin: Option<String>
     },
 
-    /// Check a package or all package updates
-    #[command(alias = "cu")]
-    CheckUpdates {
-        /// Name of the package to check updates of. Checks update of all if not provided
-        package: Option<String>,
-    },
+    /// Clean entries in plugins/ that are not present in plugins.toml
+    Clean,
 
-    /// List all installed packages
-    #[command(alias = "l")]
-    List(ListArgs),
+    /// Clean the cache
+    CacheClean,
 
-    /// Clean a package or all package cache with confirmation
-    #[command(alias = "cc")]
-    ClearCache {
-        /// Name of the package to clear cache of. Clears cache of all if not provided
-        package: Option<String>,
-
-        #[command(flatten)]
-        flags: ClearCacheArgs,
-    },
-
-    /// List all directories in cache
-    #[command(alias = "lcd")]
-    ListCacheDir,
-
-    /// Remove all broken/orphaned packages
-    #[command(alias = "pc")]
-    PurgeCache,
-
-    /// Search for a package in eii-manifests
-    #[command(alias = "s")]
-    Search {
-        /// Name of the package to search for
-        package: String,
-
-        #[command(flatten)]
-        flags: SearchArgs,
-    },
+    /// List all plugins
+    List,
 }
 
-#[derive(Args, Debug)]
-pub struct ListArgs {
-    /// Verbose output
-    #[arg(long, short = 'v')]
-    pub verbose: bool,
-
-    /// Output just the total package count
-    #[arg(long, short = 't')]
-    pub total_count: bool,
-
-    /// Query a package
-    #[arg(short, long)]
-    pub query: Option<String>,
-}
-
-#[derive(Args, Debug, Clone)]
-pub struct ClearCacheArgs {
-    /// Bypass all confirmation
-    #[arg(long, short)]
-    pub force: bool,
-}
-
-#[derive(Args, Debug)]
-pub struct SearchArgs {
-    /// Log the metadata of the searched file
-    #[arg(long, short)]
-    pub log_metadata: bool,
+#[derive(Parser, Debug)]
+pub struct AddArgs {
+    /// Plugin to add. Format: "user/repo"
+    pub plugin: String,
+    /// Branch/tag/sha to reference
+    #[arg(long = "ref")]
+    pub ref_: Option<String>,
+    /// Prefer prebuilt binary over building from source
+    #[arg(long)]
+    pub prebuilt: bool,
+    /// Override build command
+    #[arg(long)]
+    pub build: Option<String>,
+    /// Override artifact path
+    #[arg(long)]
+    pub artifact: Option<String>,
 }

@@ -1,0 +1,8 @@
+version = 1
+
+[[plugin]]
+repo = "ewwii-sh/yucky-ewwii"
+ref = "0.8.0"
+sha = "288ebf284313b3cc6b13cd01a5f70b593b527e21"
+artifact = "plugins/yucky-ewwii.so"
+built_at = "1780140231"

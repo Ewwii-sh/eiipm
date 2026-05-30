@@ -1,6 +1,6 @@
 [package]
 name = "eiipm"
-version = "0.4.0"
+version = "1.0.0"
 description = "Eiipm - A simple package manager for ewwii"
 authors = ["Byson94 <byson94wastaken@gmail.com>"]
 license = "Apache-2.0"
@@ -13,8 +13,16 @@ colored = "3.0.0"
 dirs = "6.0.0"
 env_logger = "0.11.8"
 git2 = { version = "0.20.2", features = ["vendored-libgit2"] }
-glob = "0.3.3"
+indexmap = { version = "2.14.0", features = ["serde"] }
+indicatif = "0.18.4"
 log = "0.4.27"
-reqwest = { version = "0.12.22", features = ["blocking", "json"] }
-serde = { version = "1.0.219", features = ["derive"] }
+serde = { version = "1.0.228", features = ["derive"] }
 toml = "0.9.5"
+ureq = "3.3.0"
+
+[profile.release]
+opt-level = "z"
+lto = "fat"
+strip = "symbols"
+codegen-units = 1
+
