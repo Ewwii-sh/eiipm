@@ -186,25 +186,33 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="commands"><a class="header" href="#commands">Commands</a></h1>
-<p>Eiipm offers many commands which users can use to manage ewwii and its packages.</p>
-<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
-<p>Here is a simple overview before we get started.</p>
-<div class="table-wrapper"><table><thead><tr><th>Command</th><th>Aliases</th><th>Flags / Options</th></tr></thead><tbody>
-<tr><td><code>install &lt;PACKAGE&gt;</code></td><td><code>i</code></td><td><code>--debug</code></td></tr>
-<tr><td><code>uninstall &lt;PACKAGE&gt;</code></td><td><code>rm</code></td><td><code>--debug</code></td></tr>
-<tr><td><code>update [PACKAGE]</code></td><td><code>up</code></td><td><code>--debug</code></td></tr>
-<tr><td><code>list</code></td><td><code>l</code></td><td><code>-v</code>, <code>-t</code>, <code>-q &lt;NAME&gt;</code>, <code>--debug</code></td></tr>
-<tr><td><code>help</code></td><td>None</td><td>None</td></tr>
-<tr><td><code>-V, --version</code></td><td>None</td><td>None</td></tr>
-</tbody></table>
-</div>
-<p><strong>Flags for <code>list</code>:</strong></p>
-<ul>
-<li><code>-v, --verbose</code>: verbose output</li>
-<li><code>-t, --total-count</code>: output just total package count</li>
-<li><code>-q, --query &lt;NAME&gt;</code>: query a package (works with <code>--verbose</code>)</li>
-<li><code>--debug</code>: debug logs</li>
-</ul>
+<p>Eiipm offers many commands which users can use to manage plugins.</p>
+<pre><code class="language-bash"># Init plugin manager
+eiipm init
+
+# Add plugins
+eiipm add user/repo
+eiipm add user/repo --ref v1.2.0  # pin to a tag
+eiipm add user/repo --prebuilt    # prefer prebuilt binary if available
+eiipm add user/repo --build "cargo build --release" --artifact "target/release/libmy-plugin.so"
+
+# Install plugins
+eiipm install
+
+# Update Plugins
+eiipm update           # update all plugins
+eiipm update user/repo # update only this plugin
+
+# Remove plugins
+eiipm remove user/repo
+
+# List plugins
+eiipm list
+
+# Cleaning
+eiipm clean        # remove untracked artifacts from 'plugins/'
+eiipm cache-clean  # wipe the global source cache (~/.cache/eiipm/)
+</code></pre>
 
                     </main>
 
@@ -214,7 +222,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="install_command.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="authoring_plugin.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -228,7 +236,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="install_command.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="authoring_plugin.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

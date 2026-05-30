@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Clear Cache - eiipm documentation</title>
+        <title>Authoring Plugin - eiipm documentation</title>
 
 
         <!-- Custom HTML head -->
@@ -185,37 +185,26 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="clear-cache"><a class="header" href="#clear-cache">Clear Cache</a></h1>
-<h3 id="command"><a class="header" href="#command">Command</a></h3>
-<p>Clear package cache with confirmation.</p>
-<pre><code class="language-bash">eiipm clear-cache [PACKAGE]
-# or shorter:
-eiipm cc [PACKAGE]
-</code></pre>
-<h3 id="description"><a class="header" href="#description">Description</a></h3>
-<ul>
-<li>If PACKAGE is given, then it clears the cache of that package with confirmation.</li>
-<li>If no package is given, then it clears cache of all installed packages with confirmation.</li>
-</ul>
-<h3 id="options"><a class="header" href="#options">Options</a></h3>
-<p><strong>--force</strong>: Bypass confirmation.
-<strong>--debug</strong>: Show debug logs.</p>
-<h3 id="examples"><a class="header" href="#examples">Examples</a></h3>
-<pre><code class="language-bash">eiipm cc # clear all
-eiipm clear-cache staticscript  # clear just one package cache
+                        <h1 id="authoring-pluign"><a class="header" href="#authoring-pluign">Authoring Pluign</a></h1>
+<p>If you are writing a plugin for ewwii and want it to be compatible with eiipm, then add a <code>plugin.toml</code> file at the root of your repository:</p>
+<pre><code class="language-toml">[plugin]
+build = "cargo build --release"
+artifact = "target/release/libmyplugin.so"
 
-eiipm cc --force # bypasses confirmation
+# optional: provide a prebuilt binary for users who don't want to build
+[plugin.prebuilt]
+url = "https://github.com/user/repo/releases/download/{version}/libmyplugin-{arch}-{os}.so"
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="list_command.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="commands.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="tips_n_tricks.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="examples.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -225,11 +214,11 @@ eiipm cc --force # bypasses confirmation
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="list_command.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="commands.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="tips_n_tricks.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="examples.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
