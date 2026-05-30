@@ -1,23 +1,31 @@
 # Commands
 
-Eiipm offers many commands which users can use to manage ewwii and its packages.
+Eiipm offers many commands which users can use to manage plugins.
 
-## Overview
+```bash
+# Init plugin manager
+eiipm init
 
-Here is a simple overview before we get started.
+# Add plugins
+eiipm add user/repo
+eiipm add user/repo --ref v1.2.0  # pin to a tag
+eiipm add user/repo --prebuilt    # prefer prebuilt binary if available
+eiipm add user/repo --build "cargo build --release" --artifact "target/release/libmy-plugin.so"
 
-| Command               | Aliases | Flags / Options                    |
-| --------------------- | ------- | ---------------------------------- |
-| `install <PACKAGE>`   | `i`     | `--debug`                          |
-| `uninstall <PACKAGE>` | `rm`    | `--debug`                          |
-| `update [PACKAGE]`    | `up`    | `--debug`                          |
-| `list`                | `l`     | `-v`, `-t`, `-q <NAME>`, `--debug` |
-| `help`                | None    | None                               |
-| `-V, --version`       | None    | None                               |
+# Install plugins
+eiipm install
 
-**Flags for `list`:**
+# Update Plugins
+eiipm update           # update all plugins
+eiipm update user/repo # update only this plugin
 
-- `-v, --verbose`: verbose output
-- `-t, --total-count`: output just total package count
-- `-q, --query <NAME>`: query a package (works with `--verbose`)
-- `--debug`: debug logs
+# Remove plugins
+eiipm remove user/repo
+
+# List plugins
+eiipm list
+
+# Cleaning
+eiipm clean        # remove untracked artifacts from 'plugins/'
+eiipm cache-clean  # wipe the global source cache (~/.cache/eiipm/)
+```

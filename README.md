@@ -24,7 +24,7 @@ cargo build --release
 Go to your ewwii configuration directory and run the following command to initialize the plugin manager for that configuration.
 
 ```bash
-$ eiipm init
+eiipm init
 ```
 
 This will create these files/directories: `plugins.toml`, `plugins.lock`, and `plugins/`.
