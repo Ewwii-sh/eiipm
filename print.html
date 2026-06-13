@@ -187,7 +187,7 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>Eiipm is a fast and eligant plugin manager made in rust for <a href="https://github.com/Ewwii-sh/ewwii">Ewwii</a>.</p>
+<p>Eiipm is a fast and eligant plugin manager made in rust for <a href="https://github.com/Ewwii-sh/ewwii">Ewwii</a>. It helps automate and manage your ewwii plugins with ease!</p>
 <h2 id="installation"><a class="header" href="#installation">Installation</a></h2>
 <p>Download the latest release from:</p>
 <p><a href="https://github.com/Ewwii-sh/eiipm/releases/latest/">https://github.com/Ewwii-sh/eiipm/releases/latest/</a></p>
@@ -198,12 +198,13 @@ cargo build --release
 # copy target/release/eiipm somewhere on your PATH
 </code></pre>
 <h2 id="basics"><a class="header" href="#basics">Basics</a></h2>
-<p>Ewwii supports plugins which allow extending the core functionality of the core engine. The plugins go into the <code>plugins/</code> directory inside an ewwii configuration. For example, let's say you have an ewwii configuration at <code>~/.config/ewwii/</code>. To add and use a plugin, you just have to create a <code>plugins/</code> directory inside <code>~/.config/ewwii/</code> and place the plugin there.</p>
+<p>Ewwii supports plugins which allow extending the core functionality of the ewwii engine. The plugins go into the <code>plugins/</code> directory inside an ewwii configuration. For example, let's say you have an ewwii configuration at <code>~/.config/ewwii/</code>. To add and use a plugin, you have to create a <code>plugins/</code> directory inside <code>~/.config/ewwii/</code> and place the plugin there.</p>
 <pre><code>~/.config/ewwii/plugins/
   |- libxyz.so 
   |- libabc.so
 </code></pre>
-<p>Things can get messy quickly when you have a lot plugins and you have to manually download and update them every time. This is where eiipm comes in. Just run <code>eiipm init</code> in the <code>~/.config/ewwii/</code> directory and the basic plugin manager setup, and the <code>plugins/</code> directory will be automatically created. After this, all the plugins can be maintained either by editing the <code>plugins.toml</code> file or using the eiipm commands shown in later sections.</p>
+<p>Although this is straightforward, things can get messy quickly when you have a lot plugins. This is where eiipm comes in. Just run <code>eiipm init</code> in the <code>~/.config/ewwii/</code> directory and the basic plugin manager setup, including the <code>plugins/</code> directory will be automatically created. After this, all the plugins can be maintained either by editing the <code>plugins.toml</code> file or using the eiipm commands shown in later sections.</p>
+<p>Even if you don't use many plugins, eiipm can still be useful as it automates downloading and compiling the plugins.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="commands"><a class="header" href="#commands">Commands</a></h1>
 <p>Eiipm offers many commands which users can use to manage plugins.</p>
 <pre><code class="language-bash"># Init plugin manager
@@ -242,6 +243,7 @@ artifact = "target/release/libmyplugin.so"
 [plugin.prebuilt]
 url = "https://github.com/user/repo/releases/download/{version}/libmyplugin-{arch}-{os}.so"
 </code></pre>
+<p>Even if <code>plugin.toml</code> is not present, eiipm will try to still attempt to compile the plugin and find the artifact based on assumptions. Although it can work, it is highly recommended to add a <code>plugin.toml</code> to avoid issues.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="examples"><a class="header" href="#examples">Examples</a></h1>
 <p>Installing <a href="https://github.com/ewwii-sh/yucky-ewwii">yucky-ewwii</a>:</p>
 <pre><code class="language-bash"># initialize
@@ -253,6 +255,12 @@ eiipm add yucky-ewwii --prebuilt
 # install
 eiipm install
 </code></pre>
+<p><strong>Explanation:</strong></p>
+<ul>
+<li><code>eiipm init</code> will initialize the necessary directories and files.</li>
+<li><code>eiipm add yucky-ewwii --prebuilt</code> will add yucky-ewwii to your configuration (by adding it inside <code>plugins.toml</code>) and tries to use the prebuilt artifact to avoid compilation which can be slow.</li>
+<li><code>eiipm install</code> will install all the plugins that you added, that being the <code>yucky-ewwii</code> plugin.</li>
+</ul>
 
                     </main>
 
